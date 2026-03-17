@@ -1,6 +1,5 @@
-import { all } from "redux-saga/effects";
-import authorization from "./authorization/sagas";
+// import { all } from "redux-saga/effects";
 
 export default function* rootSaga(){
-    return yield all([authorization])
+    // return yield all([])
 }
