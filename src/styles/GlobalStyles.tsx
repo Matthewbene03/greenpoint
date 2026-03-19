@@ -2,7 +2,6 @@ import { createGlobalStyle } from "styled-components";
 import * as colors from "../config/colors"
 
 export default createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&display=swap');
 
     *{
         margin: 0;
