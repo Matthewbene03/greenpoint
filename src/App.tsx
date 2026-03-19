@@ -1,12 +1,35 @@
 import './App.css'
 
 import { useEffect, useState } from "react";
+import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { PersistGate } from "redux-persist/integration/react"
+
+import AppRoutes from "./routes/index"
+import GlobalStyles from './styles/GlobalStyles'
+import store, { persistor } from './store/index'
 import axiosService from './config/axios';
 import * as TiposUsuarios from "./config/TiposUsuarios";
+import NavMenu from "./components/NavMenu/index"
+import Footer from "./components/Footer/index"
 
 function App() {
   return (
-    <CadastroUsuario />
+    <>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <BrowserRouter>
+            <section>
+              <NavMenu />
+              <AppRoutes />
+              <CadastroUsuario />
+              <Footer />
+            </section>
+            <GlobalStyles />
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
+    </>
   )
 };
 
@@ -19,10 +42,6 @@ function CadastroUsuario() {
   useEffect(() => {
     getUsuarios();
   }, []);
-
-  useEffect(() => {
-    console.log("Usuarios atualizados:", usuarios);
-  }, [usuarios]);
 
   async function getUsuarios() {
     try {
@@ -67,8 +86,7 @@ function CadastroUsuario() {
         <button type='submit'>Enviar</button>
       </form>
 
-      <hr />
-      {usuarios.map((usuario: any, index:any) => (
+      {usuarios.map((usuario: any, index: any) => (
         <div key={index} id='card'>
           <h2>Nome: {usuario.nome}</h2>
           <p>Email: {usuario.email}</p>
