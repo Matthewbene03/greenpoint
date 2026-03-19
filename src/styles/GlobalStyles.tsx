@@ -2,11 +2,25 @@ import { createGlobalStyle } from "styled-components";
 import * as colors from "../config/colors"
 
 export default createGlobalStyle`
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&display=swap');
+
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    h1, h2, h3{
+        font-family: "Oswald", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: bold;
+        font-style: normal;
+    }
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     body{
-        background-color: green;
+        background-color: ${colors.SegundaCorClara};
     }
 }
 
