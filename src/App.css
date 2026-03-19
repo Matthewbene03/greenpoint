@@ -1,4 +1,4 @@
-.counter {
+/* .counter {
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
@@ -181,4 +181,37 @@
     right: 0;
     border-right-color: var(--border);
   }
+} */
+
+#formUsuario {
+  display: flex;
+  flex-direction: column;
+
+  /* border: 2px solid red; */
+}
+
+#formUsuario label{
+  margin: 10px 0px;
+}
+
+
+#formUsuario input{
+  height: 40px;
+  width: 95%;
+}
+
+#formUsuario button{
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  background-color: green;
+}
+
+#card{
+  border-top: 2px solid rgb(172, 172, 172);
+}
+
+#card h2{
+  background-color: rgb(170, 170, 170);
+  padding: 10px 5px;
 }
