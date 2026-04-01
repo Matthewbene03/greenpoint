@@ -3,19 +3,20 @@ import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Calendario from "../pages/Calendario";
 import Mapa from "../pages/MapaRotas";
-import MenuLateral from "../components/MenuLateral";
 import CadastroUsuario from "../pages/CadastroUsuario";
 import LoginUsuario from "../pages/LoginUsuario";
 import Error404 from "../pages/Error404";
 
+import * as rotas from "../config/rotas";
+
 function AppRoutes() {
     return (
         <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/calendario" element={<Calendario />} />
-            <Route path="/mapa" element={<Mapa />} />
-            <Route path="/login" element={<LoginUsuario />} />
-            <Route path="/cadastro" element={<CadastroUsuario />} />
+            <Route path={rotas.Home} element={<Home />} />
+            <Route path={rotas.Calendario} element={<Calendario />} />
+            <Route path={rotas.Mapa} element={<Mapa />} />
+            <Route path={rotas.Login} element={<LoginUsuario />} />
+            <Route path={rotas.CadastrarUsuario} element={<CadastroUsuario />} />
             <Route path="*" element={<Error404 />} />
         </Routes>
     );

@@ -3,12 +3,13 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import { IoMenuSharp } from "react-icons/io5";
 
 import { Menu } from "./styled"
+import * as rotas from "../../config/rotas"
 
 function NavMenu() {
     const location = useLocation();
     const path = location.pathname.toLowerCase();
     const navigate = useNavigate();
-    const from = location.state?.from || "/"; //Pega o caminho anterior que chegou nessa tela
+    const from = location.state?.from || rotas.Home; //Pega o caminho anterior que chegou nessa tela
 
     const handleClickArrow = (e: any) => {
         e.preventDefault();
@@ -27,7 +28,7 @@ function NavMenu() {
 
     return (
         <Menu>
-            {path === "/" ? (
+            {path === rotas.Home ? (
                 <>
                     < IoMenuSharp id="arrowToReturn" onClick={handleClickMenuSharp}/>
                     <h1>Home</h1>
