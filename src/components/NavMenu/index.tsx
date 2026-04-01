@@ -15,6 +15,11 @@ function NavMenu() {
         navigate(from, { replace: true });
     }
 
+    const handleClickMenuSharp = (e: any) => {
+        e.preventDefault();
+        
+    }
+
     const limparPath = (textPath:String) => {
         if (textPath.length < 2) return "";
         return textPath[1].toUpperCase() + textPath.slice(2);
@@ -24,7 +29,7 @@ function NavMenu() {
         <Menu>
             {path === "/" ? (
                 <>
-                    < IoMenuSharp id="arrowToReturn" />
+                    < IoMenuSharp id="arrowToReturn" onClick={handleClickMenuSharp}/>
                     <h1>Home</h1>
                 </>
             ) : (

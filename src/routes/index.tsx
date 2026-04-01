@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Calendario from "../pages/Calendario";
 import Mapa from "../pages/MapaRotas";
+import MenuLateral from "../components/MenuLateral";
 import CadastroUsuario from "../pages/CadastroUsuario";
 import LoginUsuario from "../pages/LoginUsuario";
 import Error404 from "../pages/Error404";

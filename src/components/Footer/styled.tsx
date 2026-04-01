@@ -11,11 +11,7 @@ export const Container = styled.nav`
     
     padding: 10px 20px;
     background-color: ${colors.PrimeiraCorClara};
-    
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    left: 0;
+    width: 100%;
 `;
 
 interface Props {

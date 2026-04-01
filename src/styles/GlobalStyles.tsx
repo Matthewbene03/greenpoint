@@ -9,6 +9,11 @@ export default createGlobalStyle`
         box-sizing: border-box;
     }
 
+    html, body, #root {
+        height: 100%;
+        margin: 0;
+    }
+
     h1, h2, h3{
         font-family: "Oswald", sans-serif;
         font-optical-sizing: auto;
@@ -16,39 +21,43 @@ export default createGlobalStyle`
         font-style: normal;
     }
 
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+    a, p{
+        font-family: "Funnel Sans", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        text-decoration: none;
+    }
+
+    
+
+/* @media only screen and (max-width: 600px) {
     body{
         background-color: ${colors.SegundaCorClara};
     }
 }
 
-/* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
     body{    
         background-color: black;
     }
 }
 
-/* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
     body{
         background-color: blue;
     }
 }
 
-/* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
     body{
         background-color: yellow;
     }
 }
 
-/* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
     body{
         background-color: red;
     }
-}
+} */
 
-`;
+`
