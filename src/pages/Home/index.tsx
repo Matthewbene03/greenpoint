@@ -50,7 +50,7 @@ function Home() {
                     block
                     style={{
                         width: "40%",
-                        padding: "20px",
+                        padding: "20px 0",
                     }}
                     onClick={handleBtnCalendario}>
                     Calendario de coletas</Button>
@@ -59,7 +59,7 @@ function Home() {
                     block
                     style={{
                         width: "40%",
-                        padding: "20px",
+                        padding: "20px 0",
                     }}
                     onClick={handleBtnMapa}>
                     Mapa de pontos para coletas</Button>
