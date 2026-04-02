@@ -1,5 +1,3 @@
-import './App.css'
-
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { PersistGate } from "redux-persist/integration/react"
@@ -30,8 +28,7 @@ function App() {
                 flexDirection: "column", 
                 alignItems: "center", 
                 justifyContent: "center", 
-                padding: 0,
-                border: "2px solid red"}}>
+                padding: 0}}>
                 <AppRoutes />
               </Content>
 

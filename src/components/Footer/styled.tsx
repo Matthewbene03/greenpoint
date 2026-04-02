@@ -14,11 +14,7 @@ export const Container = styled.nav`
     width: 100%;
 `;
 
-interface Props {
-  $pagAtiva: boolean;
-}
-
-export const LinkItem = styled(Link)<Props>`
+export const LinkItem = styled(Link)`
     flex: 30%;
 
         display: flex;
@@ -26,21 +22,17 @@ export const LinkItem = styled(Link)<Props>`
         align-items: center;
         justify-content: center;
         height: 80%;
-        /* border: 2px solid red; */
 
         text-decoration: none;
         font-size: 18px;
         font-weight: bold;
         font-family: "Roboto", sans-serif;
         color: ${colors.SegundaCorClara};
-
         border-radius: 15px;
-        background-color: ${({ $pagAtiva }) => ($pagAtiva ? colors.PrimeiraCorClara: "none")};
-
         cursor: pointer;
         transition: all 300ms;
-    
+
     &:hover{
-        background-color: ${colors.PrimeiraCorClara};
+        color: ${colors.SegundaCorClara} !important;
     }
 `;

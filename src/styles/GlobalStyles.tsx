@@ -27,37 +27,4 @@ export default createGlobalStyle`
         font-style: normal;
         text-decoration: none;
     }
-
-    
-
-/* @media only screen and (max-width: 600px) {
-    body{
-        background-color: ${colors.SegundaCorClara};
-    }
-}
-
-@media only screen and (min-width: 600px) {
-    body{    
-        background-color: black;
-    }
-}
-
-@media only screen and (min-width: 768px) {
-    body{
-        background-color: blue;
-    }
-}
-
-@media only screen and (min-width: 992px) {
-    body{
-        background-color: yellow;
-    }
-}
-
-@media only screen and (min-width: 1200px) {
-    body{
-        background-color: red;
-    }
-} */
-
 `
