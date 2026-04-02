@@ -1,67 +1,74 @@
-import { useEffect, useState } from "react";
+import { Button, Form, Input, Typography } from "antd";
 
-import axiosService from "../../config/axios";
-import * as TiposUsuarios from "../../config/TiposUsuarios";
+const { Title } = Typography;
 
 function CadastroUsuario() {
-    const [usuarios, setUsuarios] = useState([]);
-    const [nome, setNome] = useState("");
-    const [email, setEmail] = useState("");
-    const [senha, setSenha] = useState("");
 
-    useEffect(() => {
-        getUsuarios();
-    }, []);
-
-    async function getUsuarios() {
-        try {
-            const { data } = await axiosService.get("/usuario");
-            setUsuarios(data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function handleSubmit(e: any) {
-        e.preventDefault();
-
-        try {
-            await axiosService.post("/usuario", { nome, email, senha, tipo: TiposUsuarios.Usuario });
-            setNome("");
-            setEmail("");
-            setSenha("");
-        } catch (error: any) {
-            console.log(error.response?.data)
-        }
-    }
+    const onFinish = (values: any) => {
+        console.log('Received values of form: ', values);
+    };
 
     return (
-        <>
-            <h1>Cadastro de usuarios</h1>
-            <form action="POST" id='formUsuario' onSubmit={handleSubmit}>
-                <label>
-                    Nome: <br />
-                    <input type="text" value={nome} onChange={(e: any) => setNome(e.target.value)} />
-                </label>
-                <label>
-                    Email: <br />
-                    <input type="email" value={email} onChange={(e: any) => setEmail(e.target.value)} />
-                </label>
-                <label>
-                    Senha: <br />
-                    <input type="password" value={senha} onChange={(e: any) => setSenha(e.target.value)} />
-                </label>
-                <button type='submit'>Enviar</button>
-            </form>
-
-            {usuarios.map((usuario: any, index: any) => (
-                <div key={index} id='card'>
-                    <h2>Nome: {usuario.nome}</h2>
-                    <p>Email: {usuario.email}</p>
-                    <p>TipoUsuario: {usuario.tipo}</p>
-                </div>
-            ))}
-        </>
+        <Form
+            name="login"
+            initialValues={{ remember: true }}
+            style={{
+                width: "50%",
+                border: "1.5px solid #c4c4c4",
+                borderRadius: "10px",
+                padding: "20px",
+                backgroundColor: "#f8f8f8"
+            }}
+            onFinish={onFinish}>
+            <Form.Item
+                name="title">
+                <Title style={{ textAlign: "center" }}> Faça o seu Cadastro</Title>
+            </Form.Item>
+            <Form.Item
+                name="nomeUsuario"
+                rules={[{ required: true, message: 'Informa o seu nome' }]}>
+                <Input placeholder="Informe seu nome" style={{
+                    height: "50px",
+                    paddingLeft: "20px",
+                    backgroundColor: "white",
+                    fontSize: "20px"
+                }} />
+            </Form.Item>
+            <Form.Item
+                name="email"
+                rules={[{ required: true, message: 'Informa o seu email' }]}
+            >
+                <Input type="email" placeholder="Informe o seu email para usuario" style={{
+                    height: "50px",
+                    paddingLeft: "20px",
+                    backgroundColor: "white",
+                    fontSize: "20px"
+                }} />
+            </Form.Item>
+            <Form.Item
+                name="senha"
+                rules={[{ required: true, message: 'Informa a sua senha' }]}
+            >
+                <Input type="password" placeholder="senha" style={{
+                    height: "50px",
+                    paddingLeft: "20px",
+                    backgroundColor: "white",
+                    fontSize: "20px"
+                }} />
+            </Form.Item>
+            <Form.Item name="btnEntrar" style={{
+                textAlign: "center"
+            }}>
+                <Button block type="primary" htmlType="submit" style={{
+                    height: "50px",
+                    width: "50%",
+                    paddingLeft: "20px",
+                    fontSize: "20px",
+                }} >
+                    Criar conta
+                </Button>
+            </Form.Item>
+        </Form>
     )
 }
 
