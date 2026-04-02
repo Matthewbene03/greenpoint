@@ -30,7 +30,8 @@ function App() {
                 flexDirection: "column", 
                 alignItems: "center", 
                 justifyContent: "center", 
-                padding: 0}}>
+                padding: 0,
+                border: "2px solid red"}}>
                 <AppRoutes />
               </Content>
 
