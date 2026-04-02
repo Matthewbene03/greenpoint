@@ -23,16 +23,18 @@ function App() {
               </Header>
 
               <Content style={{
-                flex: 1, 
-                display: "flex", 
-                flexDirection: "column", 
-                alignItems: "center", 
-                justifyContent: "center", 
-                padding: 0}}>
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 0,
+                backgroundColor: "white"
+              }}>
                 <AppRoutes />
               </Content>
 
-              <AntFooter style={{ padding: 0}}>
+              <AntFooter style={{ padding: 0 }}>
                 <Footer />
               </AntFooter>
             </Layout>

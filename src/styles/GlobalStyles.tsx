@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import * as colors from "../config/colors"
 
 export default createGlobalStyle`
 
@@ -12,6 +11,7 @@ export default createGlobalStyle`
     html, body, #root {
         height: 100%;
         margin: 0;
+        background-color: white;
     }
 
     h1, h2, h3{
