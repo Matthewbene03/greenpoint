@@ -11,33 +11,31 @@ function Home() {
     const handleBtnCalendario = (e: any) => {
         e.preventDefault();
         navigate(rotas.Calendario, {
-            state: { from: location.pathname } 
+            state: { from: location.pathname }
         });
     }
 
     const handleBtnMapa = (e: any) => {
         e.preventDefault();
         navigate(rotas.Mapa, {
-            state: { from: location.pathname } 
+            state: { from: location.pathname }
         });
     }
 
     return (
         <Flex
+            flex={1}
             vertical
             justify="center"
             align="center"
             style={{
-                height: "700px",
                 width: "100%",
             }}>
             <Flex
-                flex={15}
                 align="center">
                 <Title>Olá, Usuario 69</Title>
             </Flex>
             <Flex
-                flex={85}
                 vertical
                 justify="center"
                 align="center"
@@ -49,8 +47,12 @@ function Home() {
                     type="primary"
                     block
                     style={{
-                        width: "40%",
-                        padding: "20px 0",
+                        height: "auto",
+                        width: "50%",
+                        fontSize: "20px",
+                        whiteSpace: "normal",
+                        textAlign: "center",
+                        padding: "10px"
                     }}
                     onClick={handleBtnCalendario}>
                     Calendario de coletas</Button>
@@ -58,11 +60,15 @@ function Home() {
                     type="primary"
                     block
                     style={{
-                        width: "40%",
-                        padding: "20px 0",
+                        height: "auto",
+                        width: "50%",
+                        fontSize: "20px",
+                        whiteSpace: "normal",
+                        textAlign: "center",
+                        padding: "10px"
                     }}
                     onClick={handleBtnMapa}>
-                    Mapa de pontos para coletas</Button>
+                    Mapa de pontos de coleta</Button>
             </Flex>
         </Flex>
     )

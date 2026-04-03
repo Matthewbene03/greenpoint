@@ -13,7 +13,7 @@ function CadastroUsuario() {
         console.log('Received values of form: ', values);
     };
 
-    const handleClickEdit = () =>{
+    const handleClickEdit = () => {
         navigate(rotas.Home)
     }
 
@@ -22,7 +22,8 @@ function CadastroUsuario() {
             name="login"
             initialValues={{ remember: true }}
             style={{
-                width: "50%",
+                width: "90%",
+                maxWidth: "800px",
                 border: "1.5px solid #c4c4c4",
                 borderRadius: "10px",
                 padding: "20px",
@@ -36,6 +37,7 @@ function CadastroUsuario() {
             <Form.Item
                 name="nomeUsuario"
                 rules={[{ required: true, message: 'Informa o seu nome' }]}>
+
                 <Input value="usuario69" placeholder="Informe seu nome" style={{
                     height: "50px",
                     paddingLeft: "20px",
@@ -46,7 +48,7 @@ function CadastroUsuario() {
             <Form.Item
                 name="email"
                 rules={[{ required: true, message: 'Informa o seu email' }]}>
-                <Input value="usuario69@gmail.com" type="email" placeholder="Informe o seu email para usuario" style={{
+                <Input value="usuario69@gmail.com" type="email" placeholder="Informe o seu email" style={{
                     height: "50px",
                     paddingLeft: "20px",
                     backgroundColor: "white",
@@ -68,10 +70,12 @@ function CadastroUsuario() {
                 textAlign: "center"
             }}>
                 <Button onClick={handleClickEdit} block type="primary" htmlType="submit" style={{
-                    height: "50px",
+                    height: "auto",
                     width: "50%",
-                    paddingLeft: "20px",
                     fontSize: "20px",
+                    whiteSpace: "normal",
+                    textAlign: "center",
+                    padding: "10px"
                 }} >
                     Editar conta
                 </Button>

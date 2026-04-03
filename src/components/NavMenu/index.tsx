@@ -26,8 +26,9 @@ function NavMenu() {
         e.preventDefault();
         //Futuramente, verificar se o usuario está logado para poder ver o perfil dele. Se não estiver, mandar ele para a pagina de login
         navigate(rotas.EditarUsario, {
-            state: {from: location.pathname}
+            state: { from: location.pathname }
         });
+        closeDrawer();
     }
 
     const handleClickSair = (e: any) => {
@@ -48,27 +49,27 @@ function NavMenu() {
         <>
             <Drawer
                 title={
-                    <>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "10px",
-                                paddingLeft: "10px"
-                            }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            paddingLeft: "10px"
+                        }}>
+                        <div>
                             <span>👤</span>
                             <strong>Usuário 69</strong>
-                            <br />
                         </div>
-                        <p style={{ paddingLeft: "10px" }}>
+                        <p>
                             usuario69@gmail.com
                         </p>
-                    </>
+                    </div>
                 }
                 placement="left"
                 mask={{ blur: true }}
                 onClose={closeDrawer}
-                open={open}>
+                open={open}
+                width={"auto"}
+                >
                 <Flex
                     vertical
                     align='start'

@@ -13,7 +13,8 @@ function CadastroUsuario() {
             name="login"
             initialValues={{ remember: true }}
             style={{
-                width: "50%",
+                width: "90%",
+                maxWidth: "800px",
                 border: "1.5px solid #c4c4c4",
                 borderRadius: "10px",
                 padding: "20px",
@@ -38,7 +39,7 @@ function CadastroUsuario() {
                 name="email"
                 rules={[{ required: true, message: 'Informa o seu email' }]}
             >
-                <Input type="email" placeholder="Informe o seu email para usuario" style={{
+                <Input type="email" placeholder="Informe o seu email" style={{
                     height: "50px",
                     paddingLeft: "20px",
                     backgroundColor: "white",
@@ -60,10 +61,12 @@ function CadastroUsuario() {
                 textAlign: "center"
             }}>
                 <Button block type="primary" htmlType="submit" style={{
-                    height: "50px",
+                    height: "auto",
                     width: "50%",
-                    paddingLeft: "20px",
                     fontSize: "20px",
+                    whiteSpace: "normal",
+                    textAlign: "center",
+                    padding: "10px"
                 }} >
                     Criar conta
                 </Button>

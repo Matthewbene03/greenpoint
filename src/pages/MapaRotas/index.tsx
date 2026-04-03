@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
+import "./style.css";
+
 import axiosService from "../../config/axios";
 import endPoints from "../../config/endPoints";
 
@@ -97,16 +99,18 @@ function Mapa() {
     } else {
         return (
             <Flex
-                flex={1}
                 vertical
                 justify="space-evenly"
                 align="center"
                 style={{
-                    height: "700px",
-                    width: "80%",
-                    overflow: "hidden"
+                    height: "70vh",
+                    width: "90%",
+                    margin: "15px 0px"
                 }}>
-                <Title style={{ fontSize: "35px" }}>Mapa de pontos de coletas</Title>
+                <Title style={{
+                    textAlign: "center",
+                    fontSize: "35px"
+                }}>Mapa de pontos de coletas</Title>
                 <Paragraph style={{
                     textAlign: "center",
                 }}>
@@ -127,6 +131,7 @@ function Mapa() {
                     style={{
                         height: "500px",
                         width: "100%",
+                        marginBottom: "15px",
                         border: "1.5px solid #bebebe",
                     }}>
                     {local && (
