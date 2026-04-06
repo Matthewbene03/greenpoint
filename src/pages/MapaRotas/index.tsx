@@ -3,12 +3,41 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
+import markerIconBlue from "../../img/leaflet/marker-icon-blue.png";
+import markerIcon2xBlue from "../../img/leaflet/marker-icon-2x-blue.png";
+import markerIconGreen from "../../img/leaflet/marker-icon-green.png";
+import markerIcon2xGreen from "../../img/leaflet/marker-icon-2x-green.png";
+import markerShadow from "../../img/leaflet/marker-shadow.png";
+
 import "./style.css";
 
 import axiosService from "../../config/axios";
 import endPoints from "../../config/endPoints";
 
 const { Title, Paragraph } = Typography;
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrlBlue: markerIcon2xBlue,
+    iconRetinaUrlGreen: markerIcon2xGreen,
+    iconUrlBlue: markerIconBlue,
+    iconUrlGreen: markerIconGreen,
+    iconUrlMarkerShadow: markerShadow,
+});
+
+const customIconBlue = L.icon({
+    iconUrl: markerIcon2xBlue,
+    shadowUrl: markerShadow,
+    iconSize: [25, 45],
+    iconAnchor: [10, 50]
+});
+
+const customIconGreen = L.icon({
+    iconUrl: markerIcon2xGreen,
+    shadowUrl: markerShadow,
+    iconSize: [25, 45],
+    iconAnchor: [10, 50]
+});
 
 function Mapa() {
 
@@ -26,13 +55,6 @@ function Mapa() {
 
     const [enderecoPonto, setEnderecoPonto] = useState<String | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-
-    const customIcon = L.icon({
-        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-        iconSize: [25, 45],
-        iconAnchor: [10, 50]
-    });
 
     useEffect(() => {
         const carregarTudo = async () => {
@@ -146,15 +168,15 @@ function Mapa() {
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             />
 
-                            <Marker position={[local.lat, local.lng]}>
-                                <Popup>Você está aqui</Popup>
+                            <Marker position={[local.lat, local.lng]} icon={customIconBlue}>
+                                <Popup offset={[2, -40]}>Você está aqui</Popup>
                             </Marker>
 
                             {localColeta && (localColeta.map((localPontos: any, index: number) => (
                                 <Marker
                                     key={index}
                                     position={[localPontos.lat, localPontos.lng] as [number, number]}
-                                    icon={customIcon}
+                                    icon={customIconGreen}
                                     eventHandlers={{
                                         click: () => handleClickPonto(localPontos.endereco)
                                     }}>

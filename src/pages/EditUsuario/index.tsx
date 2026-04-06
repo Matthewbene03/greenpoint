@@ -37,7 +37,7 @@ function CadastroUsuario() {
     useEffect(() => {
         if (update) {
             openNotificationWithIcon('success', "Edição de usuario", "Seus dados foram alterados!")
-            dispatch(actions.resetUpdate(false))
+            dispatch(actions.resetUpdate())
         }
     }, [update]);
 
