@@ -6,14 +6,16 @@ import { Drawer, Button, Flex } from 'antd';
 
 import { Menu } from "./styled"
 import * as rotas from "../../config/rotas"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/modules/rootReducer';
+import * as actions from "../../store/modules/authorization/actions"
 
 function NavMenu() {
     const location = useLocation();
     const path = location.pathname.toLowerCase();
     const navigate = useNavigate();
     const from = location.state?.from || rotas.Home; //Pega o caminho anterior que chegou nessa tela
+    const dispatch = useDispatch();
     const [open, setOpen] = useState<boolean>(false);
     const { user } = useSelector((state: RootState) => state.authorization);
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization);
@@ -43,7 +45,9 @@ function NavMenu() {
     }
 
     const handleClickSair = (e: any) => {
-        //Disparar uma action de login_failure
+        e.preventDefault();
+        dispatch(actions.loginFailure({}))
+        closeDrawer();
     }
 
     const handleClickArrow = (e: any) => {
@@ -67,7 +71,7 @@ function NavMenu() {
                             paddingLeft: "10px"
                         }}>
                         <div>
-                        {isLoggedIn && <span>👤</span>}
+                            {isLoggedIn && <span>👤</span>}
                             <strong>{user.nome}</strong>
                         </div>
                         <p>{user.email}</p>
