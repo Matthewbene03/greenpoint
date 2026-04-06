@@ -1,4 +1,4 @@
-import { call, put, all, takeLatest, take } from "redux-saga/effects"
+import { call, put, all, takeLatest } from "redux-saga/effects"
 
 // import { get } from "lodash"
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -6,7 +6,7 @@ import type { SagaIterator } from 'redux-saga';
 
 import * as actions from "./actions"
 import * as types from "../types"
-import axios from "../../../config/axios"
+import axiosService from "../../../config/axios"
 import endPoints from "../../../config/endPoints"
 
 interface RegisterPayload {
@@ -17,10 +17,11 @@ interface RegisterPayload {
 }
 
 interface UpdatePayload {
+    id: number | null;
     nome: String | null;
     email: String | null;
-    senha: String | null;
-    tipo: String | null;
+    senha: String | null | undefined;
+    trocouEmail: boolean | null;
 }
 
 interface LoginPayload {
@@ -28,15 +29,12 @@ interface LoginPayload {
     senha: String;
 }
 
-
-
-
 function* loginRequest({ payload }: PayloadAction<LoginPayload>): SagaIterator {
     try {
-        const { data } = yield call(axios.post, endPoints.login, payload)
+        const { data } = yield call(axiosService.post, endPoints.login, payload)
         yield put(actions.loginSuccess({ ...data }));
 
-        axios.defaults.headers.Authorization = `Bearer ${data.token}`
+        axiosService.defaults.headers.Authorization = `Bearer ${data.token}`
     } catch (e) {
         console.log(e)
         yield put(actions.loginFailure({}));
@@ -45,45 +43,41 @@ function* loginRequest({ payload }: PayloadAction<LoginPayload>): SagaIterator {
 
 function* registerRequest({ payload }: PayloadAction<RegisterPayload>): SagaIterator {
     try {
-        const responseData = yield call(axios.post, endPoints.cadastro, payload)
+        const responseData = yield call(axiosService.post, endPoints.cadastro, payload)
         yield put(actions.registerSuccess({ ...responseData.data }));
 
-        const { data } = yield call(axios.post, endPoints.login, { email: payload.email, senha: payload.senha }) //Faz o login apos fazer o cadastro
+        const { data } = yield call(axiosService.post, endPoints.login, { email: payload.email, senha: payload.senha }) //Faz o login apos fazer o cadastro
         yield put(actions.loginSuccess({ ...data }));
 
-        axios.defaults.headers.Authorization = `Bearer ${data.token}`
+        axiosService.defaults.headers.Authorization = `Bearer ${data.token}`
     } catch (e) {
         yield put(actions.loginFailure({}));
     }
 }
 
-// function* updateRequest({ payload }: PayloadAction<UpdatePayload>): SagaIterator {
+function* updateRequest({ payload }: PayloadAction<UpdatePayload>): SagaIterator {
 
-//     let { id, nome, email, senha, trocouEmail } = payload;
-//     senha = senha ? senha : undefined
+    let { id, nome, email, senha, trocouEmail } = payload;
+    senha = senha || undefined;
 
-//     try {
-//         const responseData = yield call(axios.put, "/usuario", { id, nome, email, senha })
-//         yield put(actions.updateSuccess({ ...responseData.data }));
+    try {
+        const responseData = yield call(axiosService.put, endPoints.editarUsuario, { id, nome, email, senha })
+        yield put(actions.updateSuccess({ 
+            user: {...responseData.data.user},
+            update: responseData.data.updated
+        }));
 
-//         if (trocouEmail) {
-//             toast.success("Edição realizada com sucesso!");
-//             toast.success("Faça login, você trocou o seu email!");
-//             yield put(actions.loginFailure({}));
-//         } else {
-//             toast.success("Edição realizada com sucesso!");
-//         }
-
-//         // // axios.defaults.headers.Authorization = `Bearer ${data.token}`
-//     } catch (e: any) {
-//         console.log(e)
-//         console.log(e.response?.data);
-//         toast.error("Usuário ou senha inválidos.");
-//     }
-// }
+        if (trocouEmail) {
+            yield put(actions.loginFailure({}));
+        }
+    } catch (e: any) {
+        console.log(e)
+        console.log(e.response?.data);
+    }
+}
 
 export default all([
     takeLatest(types.LOGIN_REQUEST, loginRequest),
     takeLatest(types.REGISTER_REQUEST, registerRequest),
-    // takeLatest(types.UPDATE_REQUEST, updateRequest),
+    takeLatest(types.UPDATE_REQUEST, updateRequest),
 ])

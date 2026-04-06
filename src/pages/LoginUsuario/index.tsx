@@ -1,6 +1,6 @@
 import { Button, Form, Input, Typography, notification } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { isEmail } from "validator";
 
 import * as rotas from "../../config/rotas";
@@ -20,7 +20,15 @@ function LoginUsuario() {
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
+    const path = location.state?.from;
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization)
+
+    useEffect(() => {
+        if (location.state?.trocouEmail && (path === rotas.EditarUsario)) {
+            openNotificationWithIcon('success', "Edição de usuario", "Você alterou o seu email. Faça login novamente.")
+        }
+    }, []);
 
     useEffect(() => {
         if (isLoggedIn) {

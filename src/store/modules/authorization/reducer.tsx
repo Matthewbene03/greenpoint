@@ -12,7 +12,7 @@ interface AuthInitialState {
     isLoggedIn: boolean;
     token: String;
     user: User;
-    isLoading: boolean;
+    update: boolean;
 }
 
 const initialState: AuthInitialState = {
@@ -24,7 +24,7 @@ const initialState: AuthInitialState = {
         email: "",
         tipo: "",
     },
-    isLoading: false,
+    update: false,
 };
 
 export const reducerAuthrization = (state = initialState, action: AnyAction): AuthInitialState => {
@@ -56,16 +56,22 @@ export const reducerAuthrization = (state = initialState, action: AnyAction): Au
             const newState = { ...initialState };
             return newState;
         }
-        // case types.UPDATE_SUCCESS: {
-        //     const newState = { ...state };
-        //     newState.user.nome = action.payload.nome;
-        //     newState.user.email = action.payload.email;
-        //     return newState
-        // }
-        // case types.UPDATE_FAILURE: {
-        //     const newState = { ...initialState };
-        //     return newState;
-        // }
+        case types.UPDATE_SUCCESS: {
+            const newState = { ...state };
+            newState.user.nome = action.payload.user.nome;
+            newState.user.email = action.payload.user.email;
+            newState.update = action.payload.update
+            return newState
+        }
+        case types.UPDATE_FAILURE: {
+            const newState = { ...initialState };
+            return newState;
+        }
+        case types.RESET_UPDATE: {
+            const newState = { ...state }
+            newState.update = false;
+            return newState;
+        }
 
         default: {
             return state
