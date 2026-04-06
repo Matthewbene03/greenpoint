@@ -1,12 +1,33 @@
-import { Flex, Button, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Flex, Button, Typography, notification } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as rotas from "../../config/rotas"
+import type { RootState } from "../../store/modules/rootReducer";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const { Title } = Typography;
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 function Home() {
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const [api, contextHolder] = notification.useNotification();
+    const { user } = useSelector((state: RootState) => state.authorization);
+    const { isLoggedIn } = useSelector((state: RootState) => state.authorization);
+
+    useEffect(() => {
+        if (location.state?.showSuccess) {
+            openNotificationWithIcon('success', "Cadastro de usuario", "Seu usuário foi criado com sucesso")
+        }
+    }, []);
+
+    const openNotificationWithIcon = (type: NotificationType, title: String, msg: String,) => {
+        api[type]({
+            title: title,
+            description: msg,
+        });
+    };
 
     const handleBtnCalendario = (e: any) => {
         e.preventDefault();
@@ -23,54 +44,59 @@ function Home() {
     }
 
     return (
-        <Flex
-            flex={1}
-            vertical
-            justify="center"
-            align="center"
-            style={{
-                width: "100%",
-            }}>
+        <>
+            {contextHolder}
             <Flex
-                align="center">
-                <Title>Olá, Usuario 69</Title>
-            </Flex>
-            <Flex
+                flex={1}
                 vertical
                 justify="center"
                 align="center"
-                gap="20px"
                 style={{
-                    width: "100%"
+                    width: "100%",
                 }}>
-                <Button
-                    type="primary"
-                    block
+                <Flex
+                    align="center">
+                    {isLoggedIn ? (<Title>Olá, {user.nome}</Title>) : (
+                        <Title>Bem-vindo ao GreenPoint</Title>
+                    )}
+                </Flex>
+                <Flex
+                    vertical
+                    justify="center"
+                    align="center"
+                    gap="20px"
                     style={{
-                        height: "auto",
-                        width: "50%",
-                        fontSize: "20px",
-                        whiteSpace: "normal",
-                        textAlign: "center",
-                        padding: "10px"
-                    }}
-                    onClick={handleBtnCalendario}>
-                    Calendario de coletas</Button>
-                <Button
-                    type="primary"
-                    block
-                    style={{
-                        height: "auto",
-                        width: "50%",
-                        fontSize: "20px",
-                        whiteSpace: "normal",
-                        textAlign: "center",
-                        padding: "10px"
-                    }}
-                    onClick={handleBtnMapa}>
-                    Mapa de pontos de coleta</Button>
+                        width: "100%"
+                    }}>
+                    <Button
+                        type="primary"
+                        block
+                        style={{
+                            height: "auto",
+                            width: "50%",
+                            fontSize: "20px",
+                            whiteSpace: "normal",
+                            textAlign: "center",
+                            padding: "10px"
+                        }}
+                        onClick={handleBtnCalendario}>
+                        Calendario de coletas</Button>
+                    <Button
+                        type="primary"
+                        block
+                        style={{
+                            height: "auto",
+                            width: "50%",
+                            fontSize: "20px",
+                            whiteSpace: "normal",
+                            textAlign: "center",
+                            padding: "10px"
+                        }}
+                        onClick={handleBtnMapa}>
+                        Mapa de pontos de coleta</Button>
+                </Flex>
             </Flex>
-        </Flex>
+        </>
     )
 }
 

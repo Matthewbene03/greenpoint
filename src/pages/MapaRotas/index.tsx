@@ -105,7 +105,7 @@ function Mapa() {
                 style={{
                     height: "70vh",
                     width: "90%",
-                    margin: "15px 0px"
+                    margin: "15px 0px",
                 }}>
                 <Title style={{
                     textAlign: "center",

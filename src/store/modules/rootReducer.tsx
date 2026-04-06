@@ -2,8 +2,12 @@
 
 import { combineReducers } from "redux";
 
-import { reducerExample } from "./exaples/reducer";
+import { reducerAuthrization } from "./authorization/reducer";
 
-export default combineReducers({
-    exaples: reducerExample,
+const rootReducer = combineReducers({
+    authorization: reducerAuthrization,
 })
+
+export default rootReducer;
+
+export type RootState = ReturnType<typeof rootReducer>;

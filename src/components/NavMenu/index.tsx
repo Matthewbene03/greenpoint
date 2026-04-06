@@ -6,6 +6,8 @@ import { Drawer, Button, Flex } from 'antd';
 
 import { Menu } from "./styled"
 import * as rotas from "../../config/rotas"
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store/modules/rootReducer';
 
 function NavMenu() {
     const location = useLocation();
@@ -13,6 +15,8 @@ function NavMenu() {
     const navigate = useNavigate();
     const from = location.state?.from || rotas.Home; //Pega o caminho anterior que chegou nessa tela
     const [open, setOpen] = useState<boolean>(false);
+    const { user } = useSelector((state: RootState) => state.authorization);
+    const { isLoggedIn } = useSelector((state: RootState) => state.authorization);
 
     const showDrawer = () => {
         setOpen(true);
@@ -24,8 +28,15 @@ function NavMenu() {
 
     const handleClickPerfil = (e: any) => {
         e.preventDefault();
-        //Futuramente, verificar se o usuario está logado para poder ver o perfil dele. Se não estiver, mandar ele para a pagina de login
         navigate(rotas.EditarUsario, {
+            state: { from: location.pathname }
+        });
+        closeDrawer();
+    }
+
+    const handleClickLogin = (e: any) => {
+        e.preventDefault();
+        navigate(rotas.Login, {
             state: { from: location.pathname }
         });
         closeDrawer();
@@ -56,20 +67,17 @@ function NavMenu() {
                             paddingLeft: "10px"
                         }}>
                         <div>
-                            <span>👤</span>
-                            <strong>Usuário 69</strong>
+                        {isLoggedIn && <span>👤</span>}
+                            <strong>{user.nome}</strong>
                         </div>
-                        <p>
-                            usuario69@gmail.com
-                        </p>
+                        <p>{user.email}</p>
                     </div>
                 }
                 placement="left"
                 mask={{ blur: true }}
                 onClose={closeDrawer}
                 open={open}
-                width={"auto"}
-                >
+                width={"auto"}>
                 <Flex
                     vertical
                     align='start'
@@ -78,13 +86,23 @@ function NavMenu() {
                     style={{
                         height: "100%"
                     }}>
-                    <Button
-                        type="link"
-                        onClick={handleClickPerfil}
-                        style={{
-                            color: "black",
-                            fontSize: "20px"
-                        }}>Perfil </Button>
+                    {isLoggedIn ? (
+                        <Button
+                            type="link"
+                            onClick={handleClickPerfil}
+                            style={{
+                                color: "black",
+                                fontSize: "20px"
+                            }}>Perfil </Button>
+                    ) : (
+                        <Button
+                            type="link"
+                            onClick={handleClickLogin}
+                            style={{
+                                color: "black",
+                                fontSize: "20px"
+                            }}>Entrar no seu perfil </Button>
+                    )}
                     <Button
                         type="link"
                         onClick={handleClickSair}
@@ -93,7 +111,7 @@ function NavMenu() {
                             fontSize: "20px"
                         }}> Sair </Button>
                 </Flex>
-            </Drawer>
+            </Drawer >
             <Menu>
                 {path === rotas.Home ? (
                     <>

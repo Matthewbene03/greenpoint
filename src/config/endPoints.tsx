@@ -1,5 +1,7 @@
 export default {
-  pontoColeta: "/pontoColeta",
-  usuario: "/usuario",
-  coleta: "/coleta"
+  pontoColeta: "/rest/v1/pontoColeta",
+  usuario: "/rest/v1/usuario",
+  coleta: "/rest/v1/coleta",
+  login: "/functions/v1/login-usuario",
+  cadastro: "/functions/v1/cadastro-usuario",
 };

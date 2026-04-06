@@ -12,5 +12,6 @@ const store = createStore(
     applyMiddleware(sagaMiddleware));
 sagaMiddleware.run(rootSaga);
 
+export type RootState = ReturnType<typeof store.getState>;
 export const persistor = persistStore(store)
 export default store;

@@ -6,7 +6,7 @@ export default (reducers: any) =>{
         {
             key: "greenpoint",
             storage, 
-            whitelist: ["exaples"]
+            whitelist: ["authorization"]
         }
     , reducers)
 
