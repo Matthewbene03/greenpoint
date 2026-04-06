@@ -5,7 +5,7 @@ import type { RootState } from '../../store/modules/rootReducer';
 
 import * as tipoUsuario from "../../config/TiposUsuarios";
 import * as actions from "../../store/modules/authorization/actions"
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
@@ -17,6 +17,11 @@ function CadastroUsuario() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization)
+
+    
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [foto, setFoto] = useState<string | null>(null);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -44,6 +49,8 @@ function CadastroUsuario() {
             formErros = true;
         }
 
+        
+
         if (formErros) return;
 
         dispatch(actions.registerRequest({
@@ -52,6 +59,46 @@ function CadastroUsuario() {
             senha: values.senha,
             tipo: tipoUsuario.Usuario
         }));
+    };
+
+    
+    const ativarCamera = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+        });
+
+        if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+        }
+    };
+
+    const pararCamera = () => {
+    const video = videoRef.current;
+
+    if (video && video.srcObject) {
+        const stream = video.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+    }
+};
+    
+    const tirarFoto = () => {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+
+        if (!video || !canvas) return;
+
+        const context = canvas.getContext("2d");
+        if (!context) return;
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imagem = canvas.toDataURL("image/png");
+        setFoto(imagem);
     };
 
     return (
@@ -71,9 +118,11 @@ function CadastroUsuario() {
                     backgroundColor: "#f8f8f8"
                 }}
                 onFinish={onFinish}>
+
                 <Form.Item>
                     <Title style={{ textAlign: "center" }}> Faça o seu Cadastro</Title>
                 </Form.Item>
+
                 <Form.Item
                     name="nome"
                     rules={[{ required: true, message: 'Informa o seu nome' }]}>
@@ -84,6 +133,7 @@ function CadastroUsuario() {
                         fontSize: "20px"
                     }} />
                 </Form.Item>
+
                 <Form.Item
                     name="email"
                     rules={[{ required: true, message: 'Informa o seu email' }]}
@@ -95,6 +145,7 @@ function CadastroUsuario() {
                         fontSize: "20px"
                     }} />
                 </Form.Item>
+
                 <Form.Item
                     name="senha"
                     rules={[{ required: true, message: 'Informa a sua senha' }]}
@@ -106,6 +157,55 @@ function CadastroUsuario() {
                         fontSize: "20px"
                     }} />
                 </Form.Item>
+
+                
+                <div style={{ textAlign: "center", marginBottom: "10px" }}>
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        style={{
+                            width: "100%",
+                            maxWidth: "400px",
+                            backgroundColor: "#000",
+                            borderRadius: "10px"
+                        }}
+                    />
+                </div>
+
+                
+                <canvas ref={canvasRef} style={{ display: "none" }} />
+
+                
+                {foto && (
+                    <div style={{ textAlign: "center", marginBottom: "10px" }}>
+                        <img
+                            src={foto}
+                            alt="Foto"
+                            style={{
+                                width: "100%",
+                                maxWidth: "400px",
+                                borderRadius: "10px"
+                            }}
+                        />
+                    </div>
+                )}
+
+                
+                <Form.Item style={{ textAlign: "center" }}>
+                    <Button danger onClick={pararCamera} style={{ marginLeft: 10 }}>
+                         Parar Câmera
+                    </Button>
+                    
+                    <Button onClick={ativarCamera} style={{ marginRight: 10 }}>
+                        Ativar Câmera
+                    </Button>
+
+                    <Button onClick={tirarFoto}>
+                        Tirar Foto
+                    </Button>
+                </Form.Item>
+
                 <Form.Item style={{
                     textAlign: "center"
                 }}>
@@ -120,6 +220,7 @@ function CadastroUsuario() {
                         Criar conta
                     </Button>
                 </Form.Item>
+
             </Form>
         </>
     )
