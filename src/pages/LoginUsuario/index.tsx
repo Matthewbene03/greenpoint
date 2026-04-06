@@ -6,6 +6,11 @@ import { isEmail } from "validator";
 import * as rotas from "../../config/rotas";
 import axiosService from "../../config/axios";
 import endPoints from "../../config/endPoints";
+import { useDispatch, useSelector } from "react-redux";
+
+import * as actions from "../../store/modules/authorization/actions"
+import type { RootState } from "../../store/modules/rootReducer";
+import { useEffect } from "react";
 
 const { Title, Paragraph } = Typography;
 type NotificationType = 'success' | 'error';
@@ -13,8 +18,20 @@ type NotificationType = 'success' | 'error';
 function LoginUsuario() {
 
     const [api, contextHolder] = notification.useNotification();
-
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { isLoggedIn } = useSelector((state: RootState) => state.authorization)
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/", {
+                state: {
+                    showSuccess: true,
+                    from: location.pathname
+                }
+            });
+        }
+    }, [isLoggedIn])
 
     const openNotificationWithIcon = (type: NotificationType, title: String, msg: String,) => {
         api[type]({
@@ -23,7 +40,7 @@ function LoginUsuario() {
         });
     };
 
-    const onFinish =  async (values: any) => {
+    const onFinish = async (values: any) => {
         let formErros = false;
 
         if (!isEmail(values.usuario)) {
@@ -33,13 +50,10 @@ function LoginUsuario() {
 
         if (formErros) return;
 
-        try{
-            const {data} = await axiosService.get(endPoints.usuario)
-            console.log(data);
-        } catch(e){
-
-        }
-
+        dispatch(actions.loginRequest({
+            email: values.usuario,
+            senha: values.senha
+        }))
     };
 
     const handleClickCadastrarUsuario = (e: any) => {

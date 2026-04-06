@@ -46,14 +46,9 @@ function* loginRequest({ payload }: PayloadAction<LoginPayload>): SagaIterator {
 function* registerRequest({ payload }: PayloadAction<RegisterPayload>): SagaIterator {
     try {
         const responseData = yield call(axios.post, endPoints.cadastro, payload)
-        console.log("--- Dados do cadastro ---")
-        console.log(payload)
-        console.log(responseData.data)
         yield put(actions.registerSuccess({ ...responseData.data }));
 
         const { data } = yield call(axios.post, endPoints.login, { email: payload.email, senha: payload.senha }) //Faz o login apos fazer o cadastro
-        console.log("--- Dados do login ---")
-        console.log(data)
         yield put(actions.loginSuccess({ ...data }));
 
         axios.defaults.headers.Authorization = `Bearer ${data.token}`

@@ -1,9 +1,9 @@
 import { Flex, Button, Typography, notification } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import * as rotas from "../../config/rotas"
 import type { RootState } from "../../store/modules/rootReducer";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import * as rotas from "../../config/rotas"
 
 const { Title } = Typography;
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -12,13 +12,16 @@ function Home() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const path = location.state?.from;
     const [api, contextHolder] = notification.useNotification();
     const { user } = useSelector((state: RootState) => state.authorization);
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization);
 
     useEffect(() => {
-        if (location.state?.showSuccess) {
+        if (location.state?.showSuccess && (path === rotas.CadastrarUsuario)) {
             openNotificationWithIcon('success', "Cadastro de usuario", "Seu usuário foi criado com sucesso")
+        } else if(location.state?.showSuccess && (path === rotas.Login)){
+            openNotificationWithIcon('success', "Login de usuario", `Bem vindo novamente, ${user.nome}`)
         }
     }, []);
 

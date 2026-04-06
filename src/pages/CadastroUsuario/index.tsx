@@ -20,7 +20,12 @@ function CadastroUsuario() {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate("/", { state: { showSuccess: true } });
+            navigate("/", {
+                state: {
+                    showSuccess: true,
+                    from: location.pathname
+                }
+            });
         }
     }, [isLoggedIn])
 
