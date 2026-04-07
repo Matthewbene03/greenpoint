@@ -71,7 +71,7 @@ function Mapa() {
                     await localizar();
                     setLocalizacaoAtiva(true);
                 }
-
+                setLoading(false)
             } catch (e) {
                 console.log(e);
             } finally {
@@ -143,7 +143,7 @@ function Mapa() {
         setEnderecoPonto(endereco);
     }
 
-    if (loading) {
+    if (loading && localizacaoAtiva) {
         return (
             <Flex
                 style={{ height: "100vh" }}

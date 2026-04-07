@@ -5,7 +5,7 @@ import type { RootState } from '../../store/modules/rootReducer';
 
 import * as tipoUsuario from "../../config/TiposUsuarios";
 import * as actions from "../../store/modules/authorization/actions"
-import { useEffect, useRef, useState } from "react"; 
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
@@ -18,7 +18,7 @@ function CadastroUsuario() {
     const navigate = useNavigate();
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization)
 
-    
+
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [foto, setFoto] = useState<string | null>(null);
@@ -29,7 +29,8 @@ function CadastroUsuario() {
                 state: {
                     showSuccess: true,
                     from: location.pathname
-                }
+                },
+                replace: true
             });
         }
     }, [isLoggedIn])
@@ -49,7 +50,7 @@ function CadastroUsuario() {
             formErros = true;
         }
 
-        
+
 
         if (formErros) return;
 
@@ -61,7 +62,7 @@ function CadastroUsuario() {
         }));
     };
 
-    
+
     const ativarCamera = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
@@ -74,15 +75,15 @@ function CadastroUsuario() {
     };
 
     const pararCamera = () => {
-    const video = videoRef.current;
+        const video = videoRef.current;
 
-    if (video && video.srcObject) {
-        const stream = video.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-    }
-};
-    
+        if (video && video.srcObject) {
+            const stream = video.srcObject as MediaStream;
+            stream.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+        }
+    };
+
     const tirarFoto = () => {
         const video = videoRef.current;
         const canvas = canvasRef.current;
@@ -158,7 +159,7 @@ function CadastroUsuario() {
                     }} />
                 </Form.Item>
 
-                
+
                 <div style={{ textAlign: "center", marginBottom: "10px" }}>
                     <video
                         ref={videoRef}
@@ -173,10 +174,10 @@ function CadastroUsuario() {
                     />
                 </div>
 
-                
+
                 <canvas ref={canvasRef} style={{ display: "none" }} />
 
-                
+
                 {foto && (
                     <div style={{ textAlign: "center", marginBottom: "10px" }}>
                         <img
@@ -191,12 +192,12 @@ function CadastroUsuario() {
                     </div>
                 )}
 
-                
+
                 <Form.Item style={{ textAlign: "center" }}>
                     <Button danger onClick={pararCamera} style={{ marginLeft: 10 }}>
-                         Parar Câmera
+                        Parar Câmera
                     </Button>
-                    
+
                     <Button onClick={ativarCamera} style={{ marginRight: 10 }}>
                         Ativar Câmera
                     </Button>

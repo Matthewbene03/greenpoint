@@ -26,6 +26,7 @@ function LoginUsuario() {
     useEffect(() => {
         if (location.state?.trocouEmail && (path === rotas.EditarUsario)) {
             openNotificationWithIcon('success', "Edição de usuario", "Você alterou o seu email. Faça login novamente.")
+            navigate(location.pathname, { replace: true });
         }
     }, []);
 
@@ -36,7 +37,8 @@ function LoginUsuario() {
                 state: {
                     showSuccess: true,
                     from: location.pathname
-                }
+                },
+                replace: true
             });
         }
     }, [isLoggedIn])

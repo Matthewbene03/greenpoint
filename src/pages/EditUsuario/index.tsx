@@ -27,8 +27,9 @@ function CadastroUsuario() {
                     state: {
                         trocouEmail: true,
                         from: location.pathname
-                    }
-                })
+                    },
+                    replace: true
+                });
             }
         }
         mudarRota();

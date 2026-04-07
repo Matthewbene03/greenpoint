@@ -20,10 +20,12 @@ function Home() {
     useEffect(() => {
         if (location.state?.showSuccess && (path === rotas.CadastrarUsuario)) {
             openNotificationWithIcon('success', "Cadastro de usuario", "Seu usuário foi criado com sucesso")
+            navigate(location.pathname, { replace: true });
         } else if (location.state?.showSuccess && (path === rotas.Login)) {
             openNotificationWithIcon('success', "Login de usuario", `Bem vindo novamente, ${user.nome}`)
+            navigate(location.pathname, { replace: true });
         }
-    }, []);
+    }, [location.state, path, user.nome]);
 
     const openNotificationWithIcon = (type: NotificationType, title: String, msg: String,) => {
         api[type]({
