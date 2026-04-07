@@ -1,16 +1,14 @@
-import { Button, Form, Input, Typography, notification } from "antd";
+import { Button, Flex, Form, Input, Spin, Typography, notification } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from "react-router-dom";
 import { isEmail } from "validator";
 
 import * as rotas from "../../config/rotas";
-import axiosService from "../../config/axios";
-import endPoints from "../../config/endPoints";
 import { useDispatch, useSelector } from "react-redux";
 
 import * as actions from "../../store/modules/authorization/actions"
 import type { RootState } from "../../store/modules/rootReducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const { Title, Paragraph } = Typography;
 type NotificationType = 'success' | 'error';
@@ -23,6 +21,7 @@ function LoginUsuario() {
     const location = useLocation();
     const path = location.state?.from;
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization)
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (location.state?.trocouEmail && (path === rotas.EditarUsario)) {
@@ -32,6 +31,7 @@ function LoginUsuario() {
 
     useEffect(() => {
         if (isLoggedIn) {
+            setLoading(false);
             navigate("/", {
                 state: {
                     showSuccess: true,
@@ -62,6 +62,7 @@ function LoginUsuario() {
             email: values.usuario,
             senha: values.senha
         }))
+        setLoading(true);
     };
 
     const handleClickCadastrarUsuario = (e: any) => {
@@ -76,6 +77,17 @@ function LoginUsuario() {
     return (
         <>
             {contextHolder}
+            {loading && <Flex
+                vertical
+                justify="center"
+                align="center"
+                style={{
+                    marginBottom: "30px"
+                }}
+            >
+                <Spin size="large" description="Fazendo o seu login..."></Spin>
+            </Flex>
+            }
             <Form
                 name="login"
                 initialValues={{ remember: true }}

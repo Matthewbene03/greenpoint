@@ -1,4 +1,4 @@
-import { Flex, Spin, Typography } from "antd";
+import { Flex, Spin, Typography, Switch, message } from "antd";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
@@ -55,14 +55,23 @@ function Mapa() {
 
     const [enderecoPonto, setEnderecoPonto] = useState<String | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [localizacaoAtiva, setLocalizacaoAtiva] = useState<boolean>(false);
+    const [loadingLocalizacao, setLoadingLocalizacao] = useState<boolean>(false);
 
     useEffect(() => {
         const carregarTudo = async () => {
             try {
+                const localizacaoSalva = localStorage.getItem("localizacaoAtiva");
+
                 await Promise.all([
-                    localizar(),
                     buscarPontosColetas()
                 ]);
+
+                if (localizacaoSalva === "true") {
+                    await localizar();
+                    setLocalizacaoAtiva(true);
+                }
+
             } catch (e) {
                 console.log(e);
             } finally {
@@ -72,6 +81,33 @@ function Mapa() {
 
         carregarTudo();
     }, []);
+
+    const handleToggleLocalizacao = (checked: boolean) => {
+        if (checked) {
+            setLoadingLocalizacao(true);
+
+            localizar()
+                .then(() => {
+                    message.success("Localização ativada!");
+                    setLocalizacaoAtiva(true);
+                    localStorage.setItem("localizacaoAtiva", "true");
+                })
+                .catch(() => {
+                    message.error("Permissão negada.");
+                    setLocalizacaoAtiva(false);
+                    localStorage.setItem("localizacaoAtiva", "false");
+                })
+                .finally(() => {
+                    setLoadingLocalizacao(false);
+                });
+
+        } else {
+            setLocal(null);
+            setLocalizacaoAtiva(false);
+            localStorage.setItem("localizacaoAtiva", "false");
+            message.info("Localização desativada.");
+        }
+    };
 
     const localizar = () => {
         return new Promise<void>((resolve, reject) => {
@@ -133,20 +169,42 @@ function Mapa() {
                     textAlign: "center",
                     fontSize: "35px"
                 }}>Mapa de pontos de coletas</Title>
-                <Paragraph style={{
-                    textAlign: "center",
-                }}>
-                    Os pontos <strong style={{ color: "green" }}>VERDES</strong> são os pontos de coletas. <br />
-                    Clique em um ponto para vizualizar o endereço <br />
-                    {enderecoPonto && (
-                        <>
-                            <strong>Endereço</strong> {enderecoPonto}
-                        </>
-                    )}
-                </Paragraph>
-                <Paragraph>
-                    Você se encontra no ponto <strong style={{ color: "blue" }}> AZUL </strong>
-                </Paragraph>
+                <Switch
+                    checked={localizacaoAtiva}
+                    onChange={handleToggleLocalizacao}
+                    loading={loadingLocalizacao}
+                    disabled={loadingLocalizacao}
+                    checkedChildren="Localização ON"
+                    unCheckedChildren="Localização OFF"
+                    style={{ marginBottom: "15px" }}
+                />
+                {local ? (
+                    <>
+                        <Paragraph style={{
+                            textAlign: "center",
+                        }}>
+                            Os pontos <strong style={{ color: "green" }}>VERDES</strong> são os pontos de coletas. <br />
+                            Clique em um ponto para vizualizar o endereço <br />
+                            {enderecoPonto && (
+                                <>
+                                    <strong>Endereço</strong> {enderecoPonto}
+                                </>
+                            )}
+                        </Paragraph>
+                        <Paragraph>
+                            Você se encontra no ponto <strong style={{ color: "blue" }}> AZUL </strong>
+                        </Paragraph>
+                    </>
+                ) : (
+                    <>
+                        <Paragraph style={{
+                            textAlign: "center",
+                            fontSize: "20px"
+                        }}>
+                            Sua localização está desativada!!! <br /> Ativa a sua localização no botão acima: Localização <strong style={{ color: "red" }}>OFF</strong> para vizualizar o mapa de pontos de coletas<br />
+                        </Paragraph>
+                    </>
+                )}
                 <Flex
                     align="center"
                     justify="center"
@@ -161,8 +219,7 @@ function Mapa() {
                             center={[local.lat, local.lng]}
                             scrollWheelZoom={false}
                             zoom={15}
-                            style={{ height: "100%", width: "100%" }}
-                        >
+                            style={{ height: "100%", width: "100%" }}>
                             <TileLayer
                                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -186,8 +243,7 @@ function Mapa() {
                                     </Popup>
                                 </Marker>
                             )))}
-                        </MapContainer>
-                    )}
+                        </MapContainer>)}
                 </Flex>
             </Flex>
         )

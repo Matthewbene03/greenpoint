@@ -20,7 +20,7 @@ function Home() {
     useEffect(() => {
         if (location.state?.showSuccess && (path === rotas.CadastrarUsuario)) {
             openNotificationWithIcon('success', "Cadastro de usuario", "Seu usuário foi criado com sucesso")
-        } else if(location.state?.showSuccess && (path === rotas.Login)){
+        } else if (location.state?.showSuccess && (path === rotas.Login)) {
             openNotificationWithIcon('success', "Login de usuario", `Bem vindo novamente, ${user.nome}`)
         }
     }, []);
@@ -59,8 +59,12 @@ function Home() {
                 }}>
                 <Flex
                     align="center">
-                    {isLoggedIn ? (<Title>Olá, {user.nome}</Title>) : (
-                        <Title>Bem-vindo ao GreenPoint</Title>
+                    {isLoggedIn ? (<Title style={{
+                        textAlign: "center"
+                    }}>Olá, {user.nome}</Title>) : (
+                        <Title style={{
+                            textAlign: "center"
+                        }}>Bem-vindo ao GreenPoint</Title>
                     )}
                 </Flex>
                 <Flex

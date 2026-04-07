@@ -1,11 +1,11 @@
-import { Button, Form, Input, notification, Typography } from "antd";
+import { Button, Form, Input, Spin, notification, Typography, Flex } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import * as actions from "../../store/modules/authorization/actions"
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/modules/rootReducer";
 import { isEmail } from "validator";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const { Title } = Typography;
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -18,7 +18,7 @@ function CadastroUsuario() {
     const { user } = useSelector((state: RootState) => state.authorization);
     const { isLoggedIn } = useSelector((state: RootState) => state.authorization);
     let { update } = useSelector((state: RootState) => state.authorization);
-
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         function mudarRota() {
@@ -36,6 +36,7 @@ function CadastroUsuario() {
 
     useEffect(() => {
         if (update) {
+            setLoading(false);
             openNotificationWithIcon('success', "Edição de usuario", "Seus dados foram alterados!")
             dispatch(actions.resetUpdate())
         }
@@ -72,11 +73,23 @@ function CadastroUsuario() {
             senha: values.senha,
             trocouEmail
         }));
+        setLoading(true);
     };
 
     return (
         <>
             {contextHolder}
+            {loading && <Flex
+                vertical
+                justify="center"
+                align="center"
+                style={{
+                    marginBottom: "30px"
+                }}
+            >
+                <Spin size="large" description="Carregando os seus dados..."></Spin>
+            </Flex>
+            }
             <Form
                 name="login"
                 initialValues={{
