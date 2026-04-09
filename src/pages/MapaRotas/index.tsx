@@ -62,15 +62,18 @@ function Mapa() {
         const carregarTudo = async () => {
             try {
                 const localizacaoSalva = localStorage.getItem("localizacaoAtiva");
-
+                
+                if (localizacaoSalva === "true") {
+                    setLocalizacaoAtiva(true);
+                    await localizar();
+                } else{
+                    setLocalizacaoAtiva(false);
+                }
+                
                 await Promise.all([
                     buscarPontosColetas()
                 ]);
 
-                if (localizacaoSalva === "true") {
-                    await localizar();
-                    setLocalizacaoAtiva(true);
-                }
                 setLoading(false)
             } catch (e) {
                 console.log(e);
