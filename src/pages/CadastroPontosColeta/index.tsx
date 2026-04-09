@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import axiosService from "../../config/axios";
 import endPoints from "../../config/endPoints";
+import { useState } from "react";
 
 const { Title } = Typography;
 const inputStyle = {
@@ -32,6 +33,7 @@ function CadastroUsuario() {
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const { user } = useSelector((state: RootState) => state.authorization);
     const { token } = useSelector((state: RootState) => state.authorization);
 
@@ -43,8 +45,7 @@ function CadastroUsuario() {
     };
 
     const onFinish = async (values: valuesForm) => {
-
-        const endereco = `${values.rua}, ${values.numero}, ${values.bairro} - ${values.cidade}/${values.uf}`
+        const endereco = `${values.rua}, ${values.numero || "Sem número"}, ${values.bairro} - ${values.cidade}/${values.uf}`
         const pontoColeta = {
             nome: values.nome,
             endereco: endereco,
@@ -53,8 +54,7 @@ function CadastroUsuario() {
             longitude: values.longitude,
             id_usuario: user.id,
         }
-        console.log(pontoColeta)
-
+        setLoading(true);
         try {
             const { data } = await axiosService.post(endPoints.cadastroPontoColeta, pontoColeta,
                 {
@@ -81,6 +81,8 @@ function CadastroUsuario() {
         } catch (e: any) {
             openNotificationWithIcon("error", "Ponto de coleta", e.response?.data?.error)
             console.log(e.response?.data?.error)
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -207,6 +209,7 @@ function CadastroUsuario() {
                             htmlType="submit"
                             size="large"
                             block
+                            loading={loading}
                             style={{
                                 marginTop: "10px",
                                 height: "50px",

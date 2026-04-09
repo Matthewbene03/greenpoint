@@ -37,6 +37,7 @@ export default function PontosColetaPage() {
     const [api, contextHolder] = notification.useNotification();
     const [data, setData] = useState<PontoColeta[]>([]);
     const [loading, setLoading] = useState(false);
+    const [loadingBtnEdit, setLoadingBtnEdit] = useState(false);
     const navigate = useNavigate();
     const { user } = useSelector((state: RootState) => state.authorization);
     const { token } = useSelector((state: RootState) => state.authorization);
@@ -92,6 +93,7 @@ export default function PontosColetaPage() {
     };
 
     const handleUpdate = async () => {
+        setLoadingBtnEdit(true);
         const values = await form.validateFields();
         const pontoColeta = {
             id: editingItem?.id,
@@ -102,9 +104,7 @@ export default function PontosColetaPage() {
             longitude: values.longitude,
             id_usuario: user.id,
         }
-        console.log(pontoColeta)
         try {
-
             const { data } = await axiosService.put(endPoints.updatePontoColeta, pontoColeta,
                 {
                     headers: {
@@ -119,6 +119,8 @@ export default function PontosColetaPage() {
             }
         } catch (e: any) {
             console.log(e.response?.data?.error);
+        } finally {
+            setLoadingBtnEdit(false)
         }
     };
 
@@ -180,7 +182,9 @@ export default function PontosColetaPage() {
                             <Button
                                 type="primary"
                                 size="large"
-                                onClick={() => navigate(rotas.PontoColeta + rotas.CadastroPontosColeta)}
+                                onClick={() => navigate(rotas.PontoColeta + rotas.CadastroPontosColeta, {
+                                    state: { from: location.pathname }
+                                })}
                             >
                                 Novo ponto
                             </Button>
@@ -253,6 +257,7 @@ export default function PontosColetaPage() {
                     <Modal
                         title="Editar ponto de coleta"
                         open={isModalOpen}
+                        confirmLoading={loadingBtnEdit}
                         onCancel={() => setIsModalOpen(false)}
                         onOk={handleUpdate}
                         okText="Salvar"
@@ -271,11 +276,11 @@ export default function PontosColetaPage() {
                             </Form.Item>
 
                             <Form.Item name="latitude" label="Latitude">
-                                <Input />
+                                <Input type="number" />
                             </Form.Item>
 
                             <Form.Item name="longitude" label="Longitude">
-                                <Input />
+                                <Input type="number" />
                             </Form.Item>
                         </Form>
                     </Modal>

@@ -26,7 +26,10 @@ function NavMenu() {
             showMenu: true,
         },
         [(rotas.PontoColeta + rotas.CadastroPontosColeta).toLowerCase()]: {
-            title: "Cadastro pontos de coletas",
+            title: "Cadastro",
+        },
+        [(rotas.PontoColeta).toLowerCase()]: {
+            title: "Ponto de coleta",
         },
     };
     const currentRoute = routeConfig[path];
