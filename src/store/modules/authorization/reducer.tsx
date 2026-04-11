@@ -1,16 +1,17 @@
-import * as types from "../types"
-import type { AnyAction } from 'redux';
+import * as types from "../types";
+import type { AnyAction } from "redux";
 
 interface User {
-    id: Number;
+    id: number;
     nome: string;
     email: string;
-    tipo: String;
+    tipo: string;
+    foto?: string | null;
 }
 
 interface AuthInitialState {
     isLoggedIn: boolean;
-    token: String;
+    token: string;
     user: User;
     update: boolean;
 }
@@ -23,58 +24,72 @@ const initialState: AuthInitialState = {
         nome: "",
         email: "",
         tipo: "",
+        foto: null,
     },
     update: false,
 };
 
-export const reducerAuthrization = (state = initialState, action: AnyAction): AuthInitialState => {
+export const reducerAuthrization = (
+    state = initialState,
+    action: AnyAction
+): AuthInitialState => {
     switch (action.type) {
         case types.LOGIN_SUCCESS: {
-            const newState = { ...state };
-            newState.isLoggedIn = true; //Está logado
-            newState.token = action.payload.token;
-            newState.user = action.payload.user;
-            return newState
+            return {
+                ...state,
+                isLoggedIn: true,
+                token: action.payload.token,
+                user: action.payload.user,
+            };
         }
+
         case types.LOGIN_REQUEST: {
-            const newState = { ...initialState };
-            return newState;
+            return { ...initialState };
         }
+
         case types.LOGIN_FAILURE: {
-            const newState = { ...initialState };
-            return newState;
+            return { ...initialState };
         }
-        case types.REGISTER_SUCCESS: { //Fez o cadastro com sucesso
-            const newState = { ...state };
-            return newState
+
+        case types.REGISTER_SUCCESS: {
+            return { ...state };
         }
+
         case types.REGISTER_REQUEST: {
-            const newState = { ...initialState };
-            return newState;
+            return { ...initialState };
         }
+
         case types.REGISTER_FAILURE: {
-            const newState = { ...initialState };
-            return newState;
+            return { ...initialState };
         }
+
         case types.UPDATE_SUCCESS: {
-            const newState = { ...state };
-            newState.user.nome = action.payload.user.nome;
-            newState.user.email = action.payload.user.email;
-            newState.update = action.payload.update
-            return newState
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    nome: action.payload.user.nome,
+                    email: action.payload.user.email,
+                    tipo: action.payload.user.tipo ?? state.user.tipo,
+                    foto: action.payload.user.foto ?? null,
+                },
+                update: action.payload.update,
+            };
         }
+
         case types.UPDATE_FAILURE: {
-            const newState = { ...initialState };
-            return newState;
+            return { ...initialState };
         }
+
         case types.RESET_UPDATE: {
-            const newState = { ...state }
-            newState.update = false;
-            return newState;
+            return {
+                ...state,
+                update: false,
+            };
         }
 
         default: {
-            return state
+            return state;
         }
     }
-}
+};

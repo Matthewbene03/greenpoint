@@ -1,12 +1,9 @@
-import { Button, Form, Input, notification, Typography } from "antd";
+import { Button, Form, Input, notification, Typography, Avatar } from "antd";
+import { PlusOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import isEmail from "validator/lib/isEmail";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from '../../store/modules/rootReducer';
-
-import * as tipoUsuario from "../../config/TiposUsuarios";
-import * as actions from "../../store/modules/authorization/actions"
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../services/supabase";
 
 const { Title } = Typography;
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -14,63 +11,101 @@ type NotificationType = 'success' | 'info' | 'warning' | 'error';
 function CadastroUsuario() {
 
     const [api, contextHolder] = notification.useNotification();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLoggedIn } = useSelector((state: RootState) => state.authorization)
-
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [foto, setFoto] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate("/", {
-                state: {
-                    showSuccess: true,
-                    from: location.pathname
-                },
-                replace: true
-            });
-        }
-    }, [isLoggedIn])
+    const [foto, setFoto] = useState<string | null>(null);
+    const [mostrarCamera, setMostrarCamera] = useState(false);
 
     const openNotificationWithIcon = (type: NotificationType, title: String, msg: String,) => {
         api[type]({
-            title: title,
+            message: title,
             description: msg,
         });
     };
 
-    const onFinish = async (values: any) => {
-        let formErros = false;
+    const base64ToFile = (base64: string, filename: string) => {
+        const arr = base64.split(',');
+        const mime = arr[0].match(/:(.*?);/)![1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
 
-        if (!isEmail(values.email)) {
-            openNotificationWithIcon('error', "Email invalido!", "Informe outro email que seja valido!")
-            formErros = true;
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
         }
 
-
-
-        if (formErros) return;
-
-        dispatch(actions.registerRequest({
-            nome: values.nome,
-            email: values.email,
-            senha: values.senha,
-            tipo: tipoUsuario.Usuario
-        }));
+        return new File([u8arr], filename, { type: mime });
     };
 
+    const onFinish = async (values: any) => {
+        if (!isEmail(values.email)) {
+            openNotificationWithIcon('error', "Email invalido!", "Informe um email válido")
+            return;
+        }
 
-    const ativarCamera = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false
+        let fotoUrl = null;
+
+        if (foto) {
+            const file = base64ToFile(foto, `user_${Date.now()}.jpg`);
+
+            const { data, error } = await supabase.storage
+                .from('usuarios')
+                .upload(`perfil/${file.name}`, file);
+
+            if (error) {
+                console.log(error);
+                openNotificationWithIcon('error', "Erro", error.message);
+                return;
+            }
+
+            const { data: publicUrl } = supabase.storage
+                .from('usuarios')
+                .getPublicUrl(data.path);
+
+            fotoUrl = publicUrl.publicUrl;
+        }
+
+        const response = await fetch("https://yyrnbsehaftutioojylw.supabase.co/functions/v1/cadastro-usuario", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nome: values.nome,
+                email: values.email,
+                senha: values.senha,
+                tipo: "USUARIO",
+                foto: fotoUrl
+            })
         });
 
-        if (videoRef.current) {
-            videoRef.current.srcObject = stream;
+        const data = await response.json();
+
+        if (!response.ok) {
+            openNotificationWithIcon('error', "Erro", data.error);
+            return;
+        }
+
+        openNotificationWithIcon('success', "Sucesso", "Usuário cadastrado!");
+        navigate("/");
+    };
+
+    const ativarCamera = async () => {
+        try {
+            setMostrarCamera(true);
+
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "user" }
+            });
+
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } catch {
+            openNotificationWithIcon('error', "Erro", "Não foi possível acessar a câmera");
         }
     };
 
@@ -96,131 +131,86 @@ function CadastroUsuario() {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        context.drawImage(video, 0, 0);
 
-        const imagem = canvas.toDataURL("image/png");
+        const imagem = canvas.toDataURL("image/jpeg", 0.7);
         setFoto(imagem);
+
+        pararCamera();
+        setMostrarCamera(false);
+    };
+
+    const removerFoto = () => {
+        setFoto(null);
     };
 
     return (
-
         <>
             {contextHolder}
 
-            <Form
-                name="login"
-                initialValues={{ remember: true }}
-                style={{
-                    width: "90%",
-                    maxWidth: "800px",
-                    border: "1.5px solid #c4c4c4",
-                    borderRadius: "10px",
-                    padding: "20px",
-                    backgroundColor: "#f8f8f8"
-                }}
-                onFinish={onFinish}>
+            <Form onFinish={onFinish} style={{ maxWidth: 500, margin: "auto" }}>
 
-                <Form.Item>
-                    <Title style={{ textAlign: "center" }}> Faça o seu Cadastro</Title>
-                </Form.Item>
+                <Title>Cadastro</Title>
 
-                <Form.Item
-                    name="nome"
-                    rules={[{ required: true, message: 'Informa o seu nome' }]}>
-                    <Input placeholder="Informe seu nome" style={{
-                        height: "50px",
-                        paddingLeft: "20px",
-                        backgroundColor: "white",
-                        fontSize: "20px"
-                    }} />
-                </Form.Item>
+                <div style={{ textAlign: "center", marginBottom: 20 }}>
+                    <div style={{ position: "relative", display: "inline-block" }}>
 
-                <Form.Item
-                    name="email"
-                    rules={[{ required: true, message: 'Informa o seu email' }]}
-                >
-                    <Input type="email" placeholder="Informe o seu email" style={{
-                        height: "50px",
-                        paddingLeft: "20px",
-                        backgroundColor: "white",
-                        fontSize: "20px"
-                    }} />
-                </Form.Item>
+                        <Avatar
+                            size={120}
+                            src={foto || undefined}
+                            icon={!foto ? <UserOutlined /> : undefined}
+                        />
 
-                <Form.Item
-                    name="senha"
-                    rules={[{ required: true, message: 'Informa a sua senha' }]}
-                >
-                    <Input type="password" placeholder="senha" style={{
-                        height: "50px",
-                        paddingLeft: "20px",
-                        backgroundColor: "white",
-                        fontSize: "20px"
-                    }} />
-                </Form.Item>
+                        <Button
+                            shape="circle"
+                            icon={<PlusOutlined />}
+                            onClick={ativarCamera}
+                            style={{ position: "absolute", bottom: 0, right: 0 }}
+                        />
 
-
-                <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                    <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
-                        style={{
-                            width: "100%",
-                            maxWidth: "400px",
-                            backgroundColor: "#000",
-                            borderRadius: "10px"
-                        }}
-                    />
+                        {foto && (
+                            <Button
+                                danger
+                                shape="circle"
+                                icon={<DeleteOutlined />}
+                                onClick={removerFoto}
+                                style={{ position: "absolute", top: 0, right: 0 }}
+                            />
+                        )}
+                    </div>
                 </div>
 
+                {mostrarCamera && (
+                    <div style={{ textAlign: "center" }}>
+                        <video ref={videoRef} autoPlay style={{ width: 250 }} />
 
-                <canvas ref={canvasRef} style={{ display: "none" }} />
-
-
-                {foto && (
-                    <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                        <img
-                            src={foto}
-                            alt="Foto"
-                            style={{
-                                width: "100%",
-                                maxWidth: "400px",
-                                borderRadius: "10px"
-                            }}
-                        />
+                        <div>
+                            <Button onClick={tirarFoto}>Tirar Foto</Button>
+                            <Button danger onClick={() => {
+                                pararCamera();
+                                setMostrarCamera(false);
+                            }}>Cancelar</Button>
+                        </div>
                     </div>
                 )}
 
+                <canvas ref={canvasRef} style={{ display: "none" }} />
 
-                <Form.Item style={{ textAlign: "center" }}>
-                    <Button danger onClick={pararCamera} style={{ marginLeft: 10 }}>
-                        Parar Câmera
-                    </Button>
-
-                    <Button onClick={ativarCamera} style={{ marginRight: 10 }}>
-                        Ativar Câmera
-                    </Button>
-
-                    <Button onClick={tirarFoto}>
-                        Tirar Foto
-                    </Button>
+                <Form.Item name="nome" rules={[{ required: true }]}>
+                    <Input placeholder="Nome" />
                 </Form.Item>
 
-                <Form.Item style={{
-                    textAlign: "center"
-                }}>
-                    <Button block type="primary" htmlType="submit" style={{
-                        height: "auto",
-                        width: "50%",
-                        fontSize: "20px",
-                        whiteSpace: "normal",
-                        textAlign: "center",
-                        padding: "10px"
-                    }} >
-                        Criar conta
-                    </Button>
+                <Form.Item name="email" rules={[{ required: true }]}>
+                    <Input placeholder="Email" />
                 </Form.Item>
+
+                <Form.Item name="senha" rules={[{ required: true }]}>
+                    <Input.Password placeholder="Senha" />
+                </Form.Item>
+
+                <Button htmlType="submit" type="primary" block>
+                    Cadastrar
+                </Button>
 
             </Form>
         </>
