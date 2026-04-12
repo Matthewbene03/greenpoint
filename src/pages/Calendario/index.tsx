@@ -1,8 +1,8 @@
 import { Button, Card, Form, Select, Typography, notification, Spin } from "antd";
+import { EnvironmentOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 
 type NotificationType = "success" | "info" | "warning" | "error";
 
@@ -18,6 +18,7 @@ function BuscarColeta() {
     const [loadingCidades, setLoadingCidades] = useState(false);
     const [loadingBairros, setLoadingBairros] = useState(false);
     const [loadingBusca, setLoadingBusca] = useState(false);
+    const [loadingLocalizacao, setLoadingLocalizacao] = useState(false);
 
     const openNotificationWithIcon = (
         type: NotificationType,
@@ -34,87 +35,82 @@ function BuscarColeta() {
         carregarCidades();
     }, []);
 
+    const normalizarTexto = (texto: string) =>
+        texto
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim()
+            .toLowerCase();
+
     const carregarCidades = async () => {
-    try {
-        setLoadingCidades(true);
-
-        const response = await fetch(
-            "https://yyrnbsehaftutioojylw.supabase.co/functions/v1/listar-cidades",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        const data = await response.json();
-
-        console.log("STATUS CIDADES:", response.status);
-        console.log("RESPOSTA CIDADES:", data);
-
-        if (!response.ok) {
-            openNotificationWithIcon("error", "Erro", data.error || "Erro ao carregar cidades");
-            return;
-        }
-
-        setCidades(data.cidades || []);
-    } catch (error) {
-        console.log("ERRO AO CARREGAR CIDADES:", error);
-        openNotificationWithIcon("error", "Erro", "Não foi possível carregar as cidades");
-    } finally {
-        setLoadingCidades(false);
-    }
-};
-
-    const carregarBairros = async (cidade: string) => {
         try {
-            setLoadingBairros(true);
-            setBairroSelecionado("");
-            setDiasColeta("");
-            setBairros([]);
+            setLoadingCidades(true);
 
             const response = await fetch(
-                "https://yyrnbsehaftutioojylw.supabase.co/functions/v1/listar-bairros",
+                "https://yyrnbsehaftutioojylw.supabase.co/functions/v1/listar-cidades",
                 {
-                    method: "POST",
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ cidade }),
                 }
             );
 
             const data = await response.json();
 
             if (!response.ok) {
-                openNotificationWithIcon("error", "Erro", data.error || "Erro ao carregar bairros");
+                openNotificationWithIcon("error", "Erro", data.error || "Erro ao carregar cidades");
                 return;
             }
 
-            setBairros(data.bairros || []);
+            setCidades(data.cidades || []);
         } catch {
-            openNotificationWithIcon("error", "Erro", "Não foi possível carregar os bairros");
+            openNotificationWithIcon("error", "Erro", "Não foi possível carregar as cidades");
         } finally {
-            setLoadingBairros(false);
+            setLoadingCidades(false);
         }
     };
 
-    const handleCidadeChange = (value: string) => {
-        setCidadeSelecionada(value);
-        carregarBairros(value);
-    };
+    const carregarBairros = async (cidade: string): Promise<string[]> => {
+    try {
+        setLoadingBairros(true);
+        setBairroSelecionado("");
+        setDiasColeta("");
+        setBairros([]);
 
-    const handleBuscar = async () => {
-        if (!cidadeSelecionada || !bairroSelecionado) {
-            openNotificationWithIcon(
-                "warning",
-                "Campos obrigatórios",
-                "Selecione a cidade e o bairro antes de buscar"
-            );
-            return;
+        const response = await fetch(
+            "https://yyrnbsehaftutioojylw.supabase.co/functions/v1/listar-bairros",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ cidade }),
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            openNotificationWithIcon("error", "Erro", data.error || "Erro ao carregar bairros");
+            return [];
         }
 
+        const lista: string[] = (data.bairros || []).sort((a: string, b: string) =>
+        a.localeCompare(b, "pt-BR", { sensitivity: "base" })
+        );
+        setBairros(lista);
+        return lista;
+
+    } catch {
+        openNotificationWithIcon("error", "Erro", "Não foi possível carregar os bairros");
+        return [];
+    } finally {
+        setLoadingBairros(false);
+    }
+};
+
+    const buscarColeta = async (cidade: string, bairro: string) => {
         try {
             setLoadingBusca(true);
             setDiasColeta("");
@@ -127,8 +123,8 @@ function BuscarColeta() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        cidade: cidadeSelecionada,
-                        bairro: bairroSelecionado,
+                        cidade,
+                        bairro,
                     }),
                 }
             );
@@ -145,6 +141,149 @@ function BuscarColeta() {
             openNotificationWithIcon("error", "Erro", "Não foi possível buscar a coleta");
         } finally {
             setLoadingBusca(false);
+        }
+    };
+
+    const handleCidadeChange = async (value: string) => {
+        setCidadeSelecionada(value);
+        await carregarBairros(value);
+    };
+
+    const handleBuscar = async () => {
+        if (!cidadeSelecionada || !bairroSelecionado) {
+            openNotificationWithIcon(
+                "warning",
+                "Campos obrigatórios",
+                "Selecione a cidade e o bairro antes de buscar"
+            );
+            return;
+        }
+
+        await buscarColeta(cidadeSelecionada, bairroSelecionado);
+    };
+
+    const localizar = () => {
+        return new Promise<{ lat: number; lng: number }>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    resolve({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    });
+                },
+                (error) => reject(error),
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0,
+                }
+            );
+        });
+    };
+
+    const usarMinhaLocalizacao = async () => {
+        try {
+            setLoadingLocalizacao(true);
+            setDiasColeta("");
+
+            const { lat, lng } = await localizar();
+
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=pt-BR`
+            );
+
+            const data = await response.json();
+
+            const address = data?.address || {};
+
+            const cidadeEncontrada =
+                address.city ||
+                address.town ||
+                address.village ||
+                address.municipality ||
+                "";
+
+            const bairroEncontrado =
+                address.suburb ||
+                address.neighbourhood ||
+                address.city_district ||
+                address.quarter ||
+                "";
+
+            if (!cidadeEncontrada) {
+                openNotificationWithIcon(
+                    "warning",
+                    "Localização encontrada",
+                    "Não foi possível identificar a cidade automaticamente."
+                );
+                return;
+            }
+
+            const cidadeSistema =
+                cidades.find(
+                    (cidade) =>
+                        normalizarTexto(cidade) === normalizarTexto(cidadeEncontrada)
+                ) || "";
+
+            if (!cidadeSistema) {
+                openNotificationWithIcon(
+                    "warning",
+                    "Cidade não cadastrada",
+                    `A cidade "${cidadeEncontrada}" não está cadastrada no sistema.`
+                );
+                return;
+            }
+
+            setCidadeSelecionada(cidadeSistema);
+
+            const bairrosDaCidade = await carregarBairros(cidadeSistema);
+
+            if (!bairroEncontrado) {
+                openNotificationWithIcon(
+                    "warning",
+                    "Bairro não identificado",
+                    "Sua cidade foi identificada, mas não foi possível detectar o bairro automaticamente."
+                );
+                return;
+            }
+
+            const bairroSistema =
+                bairrosDaCidade.find(
+                    (bairro: string) =>
+                        normalizarTexto(bairro) === normalizarTexto(bairroEncontrado)
+                ) || "";
+
+            if (!bairroSistema) {
+                openNotificationWithIcon(
+                    "warning",
+                    "Bairro não cadastrado",
+                    `O bairro "${bairroEncontrado}" não foi encontrado para a cidade "${cidadeSistema}".`
+                );
+                return;
+            }
+
+            setBairroSelecionado(bairroSistema);
+            await buscarColeta(cidadeSistema, bairroSistema);
+
+            openNotificationWithIcon(
+                "success",
+                "Localização identificada",
+                `Busca automática realizada para ${cidadeSistema} - ${bairroSistema}.`
+            );
+        } catch (error: any) {
+            let mensagem = "Não foi possível obter sua localização.";
+
+            if (error?.code === 1) {
+                mensagem = "Permissão de localização negada.";
+            } else if (error?.code === 2) {
+                mensagem = "Sua localização não pôde ser determinada.";
+            } else if (error?.code === 3) {
+                mensagem = "Tempo esgotado ao tentar obter sua localização.";
+            }
+
+            openNotificationWithIcon("error", "Erro", mensagem);
+        } finally {
+            setLoadingLocalizacao(false);
         }
     };
 
@@ -168,6 +307,24 @@ function BuscarColeta() {
                     </Title>
                 </Form.Item>
 
+                <Form.Item style={{ textAlign: "center" }}>
+                    <Button
+                        icon={<EnvironmentOutlined />}
+                        onClick={usarMinhaLocalizacao}
+                        loading={loadingLocalizacao}
+                        style={{
+                            height: "auto",
+                            width: "50%",
+                            fontSize: "18px",
+                            whiteSpace: "normal",
+                            textAlign: "center",
+                            padding: "10px",
+                        }}
+                    >
+                        Usar minha localização atual
+                    </Button>
+                </Form.Item>
+
                 <Form.Item label="Cidade" required>
                     <Select
                         showSearch
@@ -175,18 +332,16 @@ function BuscarColeta() {
                         value={cidadeSelecionada || undefined}
                         onChange={handleCidadeChange}
                         loading={loadingCidades}
-                        optionFilterProp="children"
+                        optionFilterProp="label"
                         style={{
                             height: "50px",
                             fontSize: "18px",
                         }}
-                    >
-                        {cidades.map((cidade) => (
-                            <Option key={cidade} value={cidade}>
-                                {cidade}
-                            </Option>
-                        ))}
-                    </Select>
+                        options={cidades.map((cidade) => ({
+                            value: cidade,
+                            label: cidade,
+                        }))}
+                    />
                 </Form.Item>
 
                 <Form.Item label="Bairro" required>
@@ -197,18 +352,16 @@ function BuscarColeta() {
                         onChange={(value) => setBairroSelecionado(value)}
                         loading={loadingBairros}
                         disabled={!cidadeSelecionada}
-                        optionFilterProp="children"
+                        optionFilterProp="label"
                         style={{
                             height: "50px",
                             fontSize: "18px",
                         }}
-                    >
-                        {bairros.map((bairro) => (
-                            <Option key={bairro} value={bairro}>
-                                {bairro}
-                            </Option>
-                        ))}
-                    </Select>
+                        options={bairros.map((bairro) => ({
+                            value: bairro,
+                            label: bairro,
+                        }))}
+                    />
                 </Form.Item>
 
                 <Form.Item style={{ textAlign: "center" }}>
