@@ -30,12 +30,20 @@ A proposta é oferecer uma solução prática e acessível para incentivar a rec
   - 📍 Localização atual (geolocalização)
   - 🏙️ Cidade e bairro
 
+<p align="center">
+  <img src="./src/img/telasProjeto/diasColetas.png" />
+</p>
+
 ---
 
 ### 📍 Pontos de coleta
 - Visualização de pontos próximos no mapa
 - Exibição de endereços
 - Integração com mapa interativo
+
+<p align="center">
+  <img src="./src/img/telasProjeto/mapa.png" />
+</p>
 
 ---
 
@@ -53,7 +61,7 @@ A proposta é oferecer uma solução prática e acessível para incentivar a rec
 
 ### 📱 APIs do navegador
 - Geolocalização
-- Câmera *(em integração)*
+- Câmera 
 
 ---
 
@@ -87,12 +95,27 @@ npm install
 
 # Execute o projeto
 npm run dev
+```
 
-MIT License
+---
 
-Copyright (c) 2026
+## 👨‍💻 Autores
+- Matheus Benevenuto Ferreira
+- Cassio Freire
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files...
+---
+
+## 📄 Licença
+
+- Este projeto está sob a licença MIT.
+
+- MIT License
+
+- Copyright (c) 2026
+
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files..
+
+---
 
 <p align="center"> ♻️ Contribuindo para um mundo mais sustentável 🌍 </p> ```
