@@ -1,0 +1,9 @@
+export const Home = "/";
+export const Mapa = "/mapa";
+export const Calendario = "/calendario";
+export const Login = "/login";
+export const CadastrarUsuario = "/cadastro";
+export const EditarUsario = "/perfil";
+export const PontoColeta = "/pontoColeta";
+export const CadastroPontosColeta = "/cadastro-pontosColeta";
+export const CadastroCalendario = "/cadastro-calendario";
