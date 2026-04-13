@@ -9,11 +9,11 @@ import store, { persistor } from './store/index'
 import NavMenu from "./components/NavMenu/index"
 import Footer from "./components/Footer/index"
 
-// NOVOS COMPONENTES PWA
+// COMPONENTES PWA
 import OfflineNotice from "./components/OfflineNotice"
-import PwaActions from "./components/PwaActions"
+import { PushNotificationManager } from "./components/PushNotificationManager"
 
-const { Header, Content, Footer: AntFooter } = Layout;
+const { Header, Content, Footer: AntFooter } = Layout
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
       <PersistGate persistor={persistor}>
         <BrowserRouter>
 
-          {/* Aviso Offline */}
+          {/* Aviso offline */}
           <OfflineNotice />
 
           <Layout
@@ -48,9 +48,16 @@ function App() {
             >
               <AppRoutes />
 
-              {/* Botões PWA */}
-              <div style={{ marginTop: 20, marginBottom: 20 }}>
-                <PwaActions />
+              {/* Push Notifications reais */}
+              <div
+                style={{
+                  marginTop: 20,
+                  marginBottom: 20,
+                  width: "90%",
+                  maxWidth: "800px"
+                }}
+              >
+                <PushNotificationManager />
               </div>
             </Content>
 
