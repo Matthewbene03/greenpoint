@@ -130,13 +130,6 @@ function NavMenu() {
                                 }}>Perfil</Button>
                             {user.tipo === TiposUsuarios.Admin && (
                                 <>
-                                    <Button type="link"
-                                        onClick={handleClickCalendario}
-                                        style={{
-                                            color: "black",
-                                            fontSize: "20px"
-                                        }}> Calendario
-                                    </Button>
                                     <Button
                                         type="link"
                                         onClick={handleClickPontosColetas}
