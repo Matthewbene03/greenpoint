@@ -1,7 +1,7 @@
 import { Button, Form, Input, notification, Typography, Avatar } from "antd";
 import { PlusOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import isEmail from "validator/lib/isEmail";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../services/supabase";
 

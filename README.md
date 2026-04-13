@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# 🌱 GreenPoint
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  Sistema inteligente para facilitar o acesso à coleta seletiva ♻️
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18-blue?logo=react" />
+  <img src="https://img.shields.io/badge/Vite-fast-purple?logo=vite" />
+  <img src="https://img.shields.io/badge/TypeScript-strong-blue?logo=typescript" />
+  <img src="https://img.shields.io/badge/Supabase-backend-green?logo=supabase" />
+  <img src="https://img.shields.io/badge/Status-Em%20desenvolvimento-yellow" />
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📌 Sobre o projeto
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O **GreenPoint** é uma aplicação web que ajuda usuários a encontrarem pontos de coleta de materiais recicláveis e consultarem o calendário de coleta em sua região.
 
-## Expanding the ESLint configuration
+A proposta é oferecer uma solução prática e acessível para incentivar a reciclagem, funcionando de forma semelhante à coleta de lixo tradicional — porém focada em materiais recicláveis e gerenciada por uma empresa.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Funcionalidades
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🗓️ Calendário de coleta
+- Consulta dos dias de coleta no bairro
+- Busca por:
+  - 📍 Localização atual (geolocalização)
+  - 🏙️ Cidade e bairro
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 📍 Pontos de coleta
+- Visualização de pontos próximos no mapa
+- Exibição de endereços
+- Integração com mapa interativo
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Tecnologias utilizadas
+
+### 🎨 Frontend
+- React
+- Vite
+- TypeScript
+- Ant Design
+- Leaflet + React Leaflet
+- Axios
+- Redux + React-Redux + Redux Persist
+- React Icons
+
+### 📱 APIs do navegador
+- Geolocalização
+- Câmera *(em integração)*
+
+---
+
+### ⚙️ Backend
+- Supabase
+  - Banco de dados
+  - Autenticação
+  - Edge Functions
+
+---
+
+## 📦 Como executar o projeto
+
+### 🔧 Pré-requisitos
+- Node.js (versão 18 ou superior)
+- npm ou yarn
+
+---
+
+### ▶️ Rodando em desenvolvimento
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/greenpoint.git
+
+# Acesse a pasta
+cd greenpoint
+
+# Instale as dependências
+npm install
+
+# Execute o projeto
+npm run dev

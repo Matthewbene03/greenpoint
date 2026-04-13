@@ -63,7 +63,7 @@ function Home() {
                     align="center">
                     {isLoggedIn ? (<Title style={{
                         textAlign: "center"
-                    }}>Olá, {user.nome}</Title>) : (
+                    }}>Olá {user.nome}</Title>) : (
                         <Title style={{
                             textAlign: "center"
                         }}>Bem-vindo ao GreenPoint</Title>

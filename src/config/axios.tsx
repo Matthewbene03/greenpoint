@@ -1,6 +1,6 @@
 import axios from "axios";
-import store from "../store";
-import type { RootState } from "../store/modules/rootReducer";
+// import store from "../store";
+// import type { RootState } from "../store/modules/rootReducer";
 
 const axiosService = axios.create({
     baseURL: "https://yyrnbsehaftutioojylw.supabase.co",

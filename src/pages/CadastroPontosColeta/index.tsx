@@ -2,7 +2,7 @@ import { Form, Input, Button, Typography, Row, Col, Card, notification } from "a
 import { useSelector } from "react-redux";
 import type { RootState } from '../../store/modules/rootReducer';
 
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import axiosService from "../../config/axios";
 import endPoints from "../../config/endPoints";
@@ -31,7 +31,7 @@ type valuesForm = {
 function CadastroUsuario() {
 
     const [api, contextHolder] = notification.useNotification();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const { user } = useSelector((state: RootState) => state.authorization);
