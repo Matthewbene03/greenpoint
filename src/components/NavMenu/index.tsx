@@ -42,13 +42,6 @@ function NavMenu() {
         setOpen(false);
     }
 
-    const handleClickCalendario = (e: any) => {
-        e.preventDefault();
-        navigate(rotas.CadastroCalendario, {
-            state: { from: location.pathname }
-        });
-        closeDrawer();
-    }
     const handleClickPontosColetas = (e: any) => {
         e.preventDefault();
         navigate(rotas.PontoColeta, {
