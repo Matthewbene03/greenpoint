@@ -87,3 +87,12 @@ npm install
 
 # Execute o projeto
 npm run dev
+
+MIT License
+
+Copyright (c) 2026
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files...
+
+<p align="center"> ♻️ Contribuindo para um mundo mais sustentável 🌍 </p> ```
