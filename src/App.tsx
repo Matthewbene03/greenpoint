@@ -48,7 +48,7 @@ function App() {
             >
               <AppRoutes />
 
-              {/* Push Notifications reais */}
+              {/* Push Notifications */}
               <div
                 style={{
                   marginTop: 20,
@@ -74,34 +74,3 @@ function App() {
 }
 
 export default App
-
-//Uso da geolocalização
-
-// const [local, setLocal] = useState<{
-//   lat: number;
-//   lng: number;
-// }>({
-//   lat: 0,
-//   lng: 0
-// });
-
-// const localizar = (e: any) => {
-//   e.preventDefault();
-//   navigator.geolocation.getCurrentPosition((position) => {
-//     setLocal({
-//       lat: position.coords.latitude,
-//       lng: position.coords.longitude
-//     });
-//   });
-// }
-
-// useEffect(() => {
-//   endereco();
-// }, [local])
-
-// const endereco = async () => {
-
-//   const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${local.lat}&lon=${local.lng}&format=json`);
-//   const data = await response.json();
-//   console.log(data)
-// }

@@ -15,11 +15,13 @@ function NavMenu() {
     const location = useLocation();
     const path = location.pathname.toLowerCase();
     const navigate = useNavigate();
-    const from = location.state?.from || rotas.Home; //Pega o caminho anterior que chegou nessa tela
+    const from = location.state?.from || rotas.Home;
+
     const dispatch = useDispatch();
     const [open, setOpen] = useState<boolean>(false);
-    const { user } = useSelector((state: RootState) => state.authorization);
-    const { isLoggedIn } = useSelector((state: RootState) => state.authorization);
+
+    const { user, isLoggedIn } = useSelector((state: RootState) => state.authorization);
+
     const routeConfig: Record<string, { title: string; showMenu?: boolean }> = {
         [rotas.Home]: {
             title: "Home",
@@ -32,23 +34,12 @@ function NavMenu() {
             title: "Ponto de coleta",
         },
     };
+
     const currentRoute = routeConfig[path];
 
-    const showDrawer = () => {
-        setOpen(true);
-    }
+    const showDrawer = () => setOpen(true);
+    const closeDrawer = () => setOpen(false);
 
-    const closeDrawer = () => {
-        setOpen(false);
-    }
-
-    const handleClickCalendario = (e: any) => {
-        e.preventDefault();
-        navigate(rotas.CadastroCalendario, {
-            state: { from: location.pathname }
-        });
-        closeDrawer();
-    }
     const handleClickPontosColetas = (e: any) => {
         e.preventDefault();
         navigate(rotas.PontoColeta, {
@@ -84,7 +75,7 @@ function NavMenu() {
         navigate(from, { replace: true });
     }
 
-    const limparPath = (textPath: String) => {
+    const limparPath = (textPath: string) => {
         if (textPath.length < 2) return "";
         return textPath[1].toUpperCase() + textPath.slice(2);
     }
@@ -93,12 +84,7 @@ function NavMenu() {
         <>
             <Drawer
                 title={
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            paddingLeft: "10px"
-                        }}>
+                    <div style={{ display: "flex", flexDirection: "column", paddingLeft: "10px" }}>
                         <div>
                             {isLoggedIn && <span>👤</span>}
                             <strong>{user.nome}</strong>
@@ -110,61 +96,55 @@ function NavMenu() {
                 mask={{ blur: true }}
                 onClose={closeDrawer}
                 open={open}
-                width={"auto"}>
+                width={"auto"}
+            >
                 <Flex
                     vertical
                     align='start'
                     justify='flex-start'
                     gap={"10px"}
-                    style={{
-                        height: "100%"
-                    }}>
+                    style={{ height: "100%" }}
+                >
                     {isLoggedIn ? (
                         <>
                             <Button
                                 type="link"
                                 onClick={handleClickPerfil}
-                                style={{
-                                    color: "black",
-                                    fontSize: "20px"
-                                }}>Perfil</Button>
+                                style={{ color: "black", fontSize: "20px" }}
+                            >
+                                Perfil
+                            </Button>
+
                             {user.tipo === TiposUsuarios.Admin && (
-                                <>
-                                    <Button type="link"
-                                        onClick={handleClickCalendario}
-                                        style={{
-                                            color: "black",
-                                            fontSize: "20px"
-                                        }}> Calendario
-                                    </Button>
-                                    <Button
-                                        type="link"
-                                        onClick={handleClickPontosColetas}
-                                        style={{
-                                            color: "black",
-                                            fontSize: "20px"
-                                        }}>Pontos de coletas</Button>
-                                </>
+                                <Button
+                                    type="link"
+                                    onClick={handleClickPontosColetas}
+                                    style={{ color: "black", fontSize: "20px" }}
+                                >
+                                    Pontos de coletas
+                                </Button>
                             )}
+
                             <Button
                                 type="link"
                                 onClick={handleClickSair}
-                                style={{
-                                    color: "black",
-                                    fontSize: "20px"
-                                }}> Sair </Button>
+                                style={{ color: "black", fontSize: "20px" }}
+                            >
+                                Sair
+                            </Button>
                         </>
                     ) : (
                         <Button
                             type="link"
                             onClick={handleClickLogin}
-                            style={{
-                                color: "black",
-                                fontSize: "20px"
-                            }}>Entrar no seu perfil </Button>
+                            style={{ color: "black", fontSize: "20px" }}
+                        >
+                            Entrar no seu perfil
+                        </Button>
                     )}
                 </Flex>
-            </Drawer >
+            </Drawer>
+
             <Menu>
                 <>
                     {currentRoute?.showMenu ? (

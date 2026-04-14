@@ -4,11 +4,9 @@ import { ConfigProvider } from 'antd'
 import App from './App.tsx'
 import * as colors from "./config/colors.tsx"
 
-
-
 createRoot(document.getElementById('root')!).render(
   <ConfigProvider
-    direction='ltr'
+    direction="ltr"
     theme={{
       token: {
         colorPrimary: colors.PrimeiraCorClara,
