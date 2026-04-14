@@ -1,5 +1,5 @@
 import { Button, Card, Form, Select, Typography, notification, Spin } from "antd";
-import { EnvironmentOutlined } from "@ant-design/icons";
+// import { EnvironmentOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 const { Title, Text } = Typography;
@@ -21,10 +21,10 @@ function BuscarColeta() {
   const [bairroSelecionado, setBairroSelecionado] = useState<string>("");
   const [diasColeta, setDiasColeta] = useState<string>("");
 
-  const [loadingCidades, setLoadingCidades] = useState(false);
-  const [loadingBairros, setLoadingBairros] = useState(false);
+  const [, setLoadingCidades] = useState(false);
+  const [, setLoadingBairros] = useState(false);
   const [loadingBusca, setLoadingBusca] = useState(false);
-  const [loadingLocalizacao, setLoadingLocalizacao] = useState(false);
+  // const [loadingLocalizacao, setLoadingLocalizacao] = useState(false);
 
   const openNotificationWithIcon = (
     type: NotificationType,
@@ -37,12 +37,12 @@ function BuscarColeta() {
     });
   };
 
-  const normalizarTexto = (texto: string) =>
-    texto
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim()
-      .toLowerCase();
+  // const normalizarTexto = (texto: string) =>
+  //   texto
+  //     .normalize("NFD")
+  //     .replace(/[\u0300-\u036f]/g, "")
+  //     .trim()
+  //     .toLowerCase();
 
   const salvarUltimaColeta = (cidade: string, bairro: string, dias: string) => {
     localStorage.setItem(
